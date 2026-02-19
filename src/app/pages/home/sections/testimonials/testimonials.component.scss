@@ -1,0 +1,137 @@
+@use 'styles/tokens/breakpoints' as bp;
+
+.testimonials {
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: stretch;
+
+    @include bp.mobile {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__label {
+    display: inline-flex;
+    padding: 6px 17px;
+    border: 1px solid #B8B8B8;
+    border-radius: 47px;
+    font-size: var(--font-size-md);
+    width: fit-content;
+  }
+
+  &__title {
+    font-size: var(--font-size-7xl);
+    color: black;
+    font-weight: var(--font-weight-semibold);
+    max-width: 500px;
+  }
+
+  &__btn {
+    width: fit-content;
+    padding: var(--space-2) var(--space-6);
+    background: var(--color-brand-600);
+    color: white;
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-accent);
+    
+    @include bp.mobile {
+      margin-top: var(--space-6);
+    }
+  }
+
+  &__card {
+    flex: 1;
+    background: #F5F5FA;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__quote-icon {
+    width: 105px;
+    height: 93px;
+    img { width: 100%; }
+  }
+
+  &__quote {
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-snug);
+    color: #383838;
+  }
+
+  &__author {
+    padding: 17px 20px 31px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__author-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  &__name {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-regular);
+    color: black;
+  }
+
+  &__role {
+    font-size: var(--font-size-md);
+    color: #636363;
+  }
+
+  &__nav {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__nav-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #E1E1E1;
+    border-radius: 50%;
+    
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}

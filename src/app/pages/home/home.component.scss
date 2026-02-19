@@ -1,0 +1,430 @@
+@use 'styles/tokens/breakpoints' as bp;
+
+// Hero Styles
+.hero {
+  position: relative;
+  min-height: 738px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding-top: var(--space-24); // Offset for fixed header
+  background: var(--bg-hero);
+
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 551px 1fr;
+    gap: 50px;
+    align-items: center;
+
+    @include bp.mobile {
+      grid-template-columns: 1fr;
+      gap: var(--space-12);
+    }
+  }
+
+  &__content {
+    max-width: 551px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+
+    @include bp.mobile {
+      max-width: 100%;
+      align-items: center;
+    }
+  }
+
+  &__title {
+    font-size: var(--font-size-8xl);
+    font-family: var(--font-family-heading);
+    line-height: var(--line-height-tight);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+  }
+
+  &__description {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-normal);
+    color: var(--text-primary);
+    opacity: 0.9;
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--space-6);
+
+    @include bp.mobile {
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 52px;
+    padding: 0 32px;
+    border-radius: 8px;
+    font-family: var(--font-family-base);
+    font-weight: 600;
+    text-transform: none;
+    transition: all 0.3s ease;
+
+    &.btn-primary {
+      background: #5783EC;
+      color: var(--color-neutral-0);
+      border: none;
+
+      &:hover {
+        background: #4A72D6;
+      }
+    }
+
+    &.btn-outline {
+      background: transparent;
+      color: #5783EC;
+      border: 1.5px solid #5783EC;
+
+      &:hover {
+        background: rgba(87, 131, 236, 0.05);
+      }
+    }
+  }
+
+  &__image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__image-wrapper {
+    border: 8px solid var(--color-neutral-0);
+    border-radius: var(--radius-5xl);
+    box-shadow: var(--shadow-hero);
+    overflow: hidden;
+    width: 734px;
+    height: 486px;
+    margin-right: -40px; // Offset to match Figma alignment
+
+    @include bp.mobile {
+      width: 100%;
+      height: auto;
+      margin-right: 0;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__features-badge {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    background: #f1f5fd;
+    border: 5px solid var(--color-neutral-0);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+    min-width: 233px;
+    box-shadow: var(--shadow-md);
+
+    @include bp.mobile {
+      position: static;
+      margin-top: var(--space-6);
+    }
+  }
+
+  &__features-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    text-align: left;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      color: #0a225c;
+      font-size: var(--font-size-md);
+    }
+  }
+}
+
+// About Styles
+.about {
+  background: var(--bg-surface);
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: center;
+
+    @include bp.mobile {
+      grid-template-columns: 1fr;
+      gap: var(--space-12);
+    }
+  }
+
+  &__image-container {
+    img {
+      width: 100%;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  &__main-title {
+    font-size: var(--font-size-7xl);
+    color: #1F2164;
+    font-weight: var(--font-weight-semibold);
+  }
+
+  &__step {
+    display: flex;
+    gap: var(--space-3);
+    padding-bottom: var(--space-5);
+    border-radius: var(--radius-2xl);
+
+    &-icon {
+      flex-shrink: 0;
+      width: 28px;
+      height: 29px;
+      background: linear-gradient(180deg, #ACC2F5 0%, #5783EC 100%);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      span {
+        font-size: var(--font-size-xs);
+        color: white;
+        font-weight: var(--font-weight-semibold);
+      }
+    }
+
+    &-body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    &-title {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-neutral-800);
+    }
+
+    &-description {
+      font-size: var(--font-size-md);
+      color: var(--color-neutral-800);
+      opacity: 0.8;
+      max-width: 537px;
+    }
+  }
+}
+
+// Features Styles
+.features {
+  // Spacing via .section
+  
+
+  &__layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+
+    @include bp.mobile {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+
+  &__header {
+    margin-bottom: var(--space-12);
+    text-align: center;
+  }
+
+  &__title {
+    font-size: var(--font-size-7xl);
+    color: #1F2164;
+    font-weight: var(--font-weight-semibold);
+  }
+
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: 29px;
+    background: #F5F5FA;
+    border-radius: 12px;
+    overflow: hidden;
+
+    &-content {
+      position: relative;
+      height: 367px;
+      padding: 38px 37px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    &--image-only {
+      .features__card-content {
+        padding: 48px 23px; // Matching Figma padding for Card 2
+      }
+      .features__card-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        top: 0;
+        left: 0;
+      }
+    }
+
+    &-img {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      border-top-left-radius: 12px;
+      width: 90%;
+      height: auto;
+      object-fit: contain;
+      z-index: 1;
+      border-top-left-radius: 12px;
+    }
+
+    &-title {
+      position: relative;
+      z-index: 2;
+      color: white;
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-tight);
+    }
+
+    &-title-overlay {
+      position: absolute;
+      bottom: 38px;
+      left: 23px;
+      z-index: 2;
+      color: white;
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      max-width: 261px;
+    }
+
+    &-footer {
+      padding: 0 28px 32px;
+    }
+
+    &-description {
+      font-size: var(--font-size-md);
+      line-height: var(--line-height-loose);
+      color: black;
+    }
+
+    &--image-only {
+      .features__card-content {
+        height: 505px;
+      }
+      
+      .features__card-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        left: 0;
+      }
+    }
+  }
+}
+
+// FAQ Styles
+.faq {
+  background: var(--bg-surface);
+
+  &__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1.5fr;
+    gap: 80px;
+
+    @include bp.mobile {
+      grid-template-columns: 1fr;
+      gap: var(--space-12);
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  &__title {
+    font-size: 29px;
+    color: #1F2164;
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+  }
+
+  &__description {
+    font-size: 21px;
+    color: #1F2164;
+    line-height: var(--line-height-normal);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  &__item {
+    background: #F9F9F9;
+    border-radius: 18px;
+    padding: var(--space-6) var(--space-12);
+    transition: all 0.3s ease;
+
+    &--open {
+      .faq__arrow {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  &__question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 21px;
+    font-weight: var(--font-weight-semibold);
+    color: #1F2164;
+  }
+
+  &__arrow {
+    width: 24px;
+    height: 24px;
+    background: url('/images/Faq Arrow.svg') no-repeat center;
+    transition: transform 0.3s ease;
+  }
+
+  &__answer {
+    margin-top: var(--space-4);
+    font-size: 21px;
+    color: black;
+    line-height: 1.5;
+  }
+}

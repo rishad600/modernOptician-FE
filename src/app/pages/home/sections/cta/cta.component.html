@@ -1,0 +1,28 @@
+<section class="cta section">
+  <div class="container">
+    <div class="cta__header">
+      <h2 class="cta__title">Choose Your Learning Plan</h2>
+      <p class="cta__description">Invest in your professional future with our specialized optician courses.</p>
+    </div>
+
+    <div class="cta__grid">
+      <div class="cta__card" *ngFor="let plan of plans">
+        <div class="cta__card-image">
+          <img [src]="plan.image" [alt]="plan.title">
+        </div>
+        <div class="cta__card-content">
+          <h3 class="cta__card-title">{{ plan.title }}</h3>
+          <p class="cta__card-price">{{ plan.price }}</p>
+          <hr class="cta__divider">
+          <ul class="cta__features">
+            <li *ngFor="let feature of plan.features">
+              <span class="cta__tick"></span>
+              {{ feature }}
+            </li>
+          </ul>
+          <button class="cta__btn">Add to cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,39 @@
+// Typography Tokens
+
+$font-family-primary: 'Poppins', sans-serif;
+
+:root {
+  // Font Families
+  --font-family-base: #{$font-family-primary};
+  --font-family-heading: #{$font-family-primary};
+  --font-family-accent: #{$font-family-primary};
+  --font-family-sora: #{$font-family-primary};
+
+  // Font Sizes
+  --font-size-xs: 13px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 21px;
+  --font-size-3xl: 25px;
+  --font-size-4xl: 28px;
+  --font-size-5xl: 29px;
+  --font-size-6xl: 36px;
+  --font-size-7xl: 37px;
+  --font-size-8xl: 47px;
+  --font-size-9xl: 52px;
+
+  // Font Weights
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  // Line Heights
+  --line-height-tight: 1.2;
+  --line-height-snug: 1.3;
+  --line-height-normal: 1.5;
+  --line-height-loose: 1.8;
+}

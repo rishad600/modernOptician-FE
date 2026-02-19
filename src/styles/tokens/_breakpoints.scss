@@ -1,0 +1,31 @@
+// Breakpoint Tokens
+
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1536px;
+
+:root {
+  --container-max-width: 1512px;
+  --content-max-width: 768px;
+}
+
+// Mixins for easier media query usage
+@mixin mobile {
+  @media (max-width: #{$breakpoint-md}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$breakpoint-md}) and (max-width: #{$breakpoint-lg}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$breakpoint-lg}) {
+    @content;
+  }
+}

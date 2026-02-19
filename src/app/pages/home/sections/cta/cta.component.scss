@@ -1,0 +1,122 @@
+@use 'styles/tokens/breakpoints' as bp;
+
+.cta {
+  background: #0A225C;
+  border-radius: 24px;
+  
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+
+    @include bp.mobile {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+
+    @media (min-width: 640px) and (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__header {
+    text-align: center;
+    color: white;
+    margin-bottom: 53px;
+  }
+
+  &__title {
+    font-size: var(--font-size-7xl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 10px;
+  }
+
+  &__description {
+    font-size: var(--font-size-md);
+    opacity: 0.8;
+  }
+
+
+  &__card {
+    background: var(--color-brand-500);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    color: white;
+  }
+
+  &__card-image {
+    height: 152px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__card-content {
+    padding: 24px 23px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  &__card-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: 32px;
+  }
+
+  &__card-price {
+    font-size: var(--font-size-6xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: 52px;
+  }
+
+  &__divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: var(--space-4) 0;
+  }
+
+  &__features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+    margin-bottom: 24px;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: var(--font-size-md);
+    }
+  }
+
+  &__tick {
+    width: 21px;
+    height: 21px;
+    background: #3A6EE9;
+    border-radius: 50%;
+    // Icon mask would be applied here
+  }
+
+  &__btn {
+    background: white;
+    color: var(--color-brand-500);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-family: var(--font-family-base);
+    font-weight: 500;
+    width: 140px;
+    text-align: center;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}

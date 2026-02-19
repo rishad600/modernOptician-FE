@@ -1,0 +1,37 @@
+<section class="testimonials section">
+  <div class="container">
+    <div class="testimonials__layout">
+      <div class="testimonials__content">
+        <div class="testimonials__header">
+          <span class="testimonials__label">Testimonials</span>
+          <h2 class="testimonials__title">Client Experiences That speak for themsleves</h2>
+        </div>
+        <button class="testimonials__btn btn-primary">Read all Testimonials</button>
+      </div>
+  
+      <div class="testimonials__card" *ngFor="let testimonial of testimonials">
+        <div class="testimonials__card-body">
+          <div class="testimonials__quote-icon">
+            <img src="images/Testimonial Quote Container.svg" alt="Quote">
+          </div>
+          <p class="testimonials__quote">{{ testimonial.text }}</p>
+        </div>
+        
+        <div class="testimonials__author">
+          <div class="testimonials__author-info">
+            <img [src]="testimonial.avatar" [alt]="testimonial.author" class="testimonials__avatar">
+            <div>
+              <h4 class="testimonials__name">{{ testimonial.author }}</h4>
+              <p class="testimonials__role">{{ testimonial.role }}</p>
+            </div>
+          </div>
+          
+          <div class="testimonials__nav">
+            <button class="testimonials__nav-btn prev"></button>
+            <button class="testimonials__nav-btn next"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

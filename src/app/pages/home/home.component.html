@@ -1,0 +1,137 @@
+<!-- Hero Section -->
+<section class="hero section">
+  <div class="container">
+    <div class="hero__layout">
+      <div class="hero__content">
+        <div class="hero__text-container">
+          <h1 class="hero__title">Master optician skills at your own pace</h1>
+          <p class="hero__description">
+            Learn from industry experts through structured video lessons. Earn your certificate and advance your career in optometry without leaving home.
+          </p>
+        </div>
+        <div class="hero__actions">
+          <button class="hero__btn btn-primary">
+            GET STARTED
+            <span class="hero__icon-arrow"></span>
+          </button>
+          <button class="hero__btn btn-outline">
+            Watch demo
+            <span class="hero__icon-play"></span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="hero__image-container">
+        <div class="hero__image-wrapper">
+          <img src="images/Hero Image.jpg" alt="Optician Learning" class="hero__img">
+        </div>
+        
+        <!-- Floating Features Badge -->
+        <div class="hero__features-badge">
+          <ul class="hero__features-list">
+            <li><img src="images/Book.svg" alt="" width="20"> Structured Subjects</li>
+            <li><img src="images/video lesson.svg" alt="" width="20"> Self-Paced Learning</li>
+            <li><img src="images/Quizzes.svg" alt="" width="20"> Lifetime Access</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="about section">
+  <div class="container">
+    <div class="about__layout">
+      <div class="about__image-container">
+        <img src="images/About-image.png" class="about__img" alt="Learning Experience">
+      </div>
+
+      <div class="about__content">
+        <div class="about__title-group">
+          <h2 class="about__main-title">How It Works</h2>
+        </div>
+        <div class="about__step" *ngFor="let step of steps">
+          <div class="about__step-icon">
+            <span>{{ step.number }}</span>
+          </div>
+          <div class="about__step-body">
+            <h3 class="about__step-title">{{ step.title }}</h3>
+            <p class="about__step-description">{{ step.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Courses Section (CTA Component) -->
+<app-cta></app-cta>
+
+<!-- Testimonials Section -->
+<app-testimonials></app-testimonials>
+
+<!-- Features Section -->
+<section class="features section">
+  <div class="container">
+    <div class="features__header">
+      <h2 class="features__title">Why Study With Us</h2>
+    </div>
+
+    <div class="features__layout">
+      <!-- Card 1 -->
+      <div class="features__card">
+        <div class="features__card-content" style="background: linear-gradient(160.27deg, #091B46 23.61%, #5783EC 69.81%)">
+          <img src="images/FeatureCard-Image1.jpg" alt="Structured Subject-Based Learning" class="features__card-img">
+          <h3 class="features__card-title">Structured Subject-Based Learning</h3>
+        </div>
+        <div class="features__card-footer">
+          <p class="features__card-description">Our courses are logically organized to ensure a smooth learning path from basics to advanced topics.</p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="features__card features__card--image-only">
+        <div class="features__card-content">
+          <img src="images/FeatureCard-Image3.jpg" alt="Clear, Easy-to-Follow Video Lessons" class="features__card-img">
+          <p class="features__card-title-overlay">Clear, Easy-to-Follow Video Lessons</p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="features__card">
+        <div class="features__card-content" style="background: linear-gradient(156.5deg, #091B46 36.21%, #5783EC 60.56%)">
+          <img src="images/FeatureCard-Image2.jpg" alt="Self-Paced Study" class="features__card-img">
+          <h3 class="features__card-title">Self-Paced Study</h3>
+        </div>
+        <div class="features__card-footer">
+          <p class="features__card-description">Learn at your own speed. Access your classes whenever you have time, day or night.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq section">
+  <div class="container">
+    <div class="faq__layout">
+      <div class="faq__content">
+        <h2 class="faq__title">Frequently asked questions</h2>
+        <p class="faq__description">Find answers to common questions about our marketplace services.</p>
+      </div>
+      
+      <div class="faq__list">
+        <div class="faq__item" *ngFor="let faq of faqs" [class.faq__item--open]="faq.isOpen">
+          <div class="faq__question">
+            <span>{{ faq.question }}</span>
+            <div class="faq__arrow"></div>
+          </div>
+          <div class="faq__answer" *ngIf="faq.isOpen">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

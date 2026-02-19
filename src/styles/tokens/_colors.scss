@@ -1,0 +1,60 @@
+// Primitive Tokens
+$color-brand-500: #5783ec;
+$color-brand-600: #4e85fd;
+$color-brand-700: #3a6ee9;
+$color-brand-800: #356ae8;
+$color-brand-900: #0a225c;
+
+$color-neutral-0: #ffffff;
+$color-neutral-50: #f9f9f9;
+$color-neutral-100: #f5f5fa;
+$color-neutral-200: #eeeff4;
+$color-neutral-300: #e1e1e1;
+$color-neutral-400: #b8b8b8;
+$color-neutral-500: #7c7c7c;
+$color-neutral-600: #636363;
+$color-neutral-800: #272727;
+$color-neutral-900: #1c1c1c;
+$color-neutral-1000: #030806;
+
+// Semantic Tokens
+:root {
+  // Brand
+  --color-primary: #{$color-brand-500};
+  --color-primary-hover: #{$color-brand-600};
+  --color-primary-dark: #{$color-brand-900};
+
+  // Backgrounds
+  --bg-surface: #{$color-neutral-0};
+  --bg-surface-soft: #{$color-neutral-50};
+  --bg-surface-neutral: #{$color-neutral-100};
+  --bg-hero: #{$color-neutral-200};
+  --bg-footer: #{$color-brand-900};
+
+  // Text
+  --text-primary: #{$color-neutral-1000};
+  --text-secondary: #{$color-neutral-600};
+  --text-muted: #{$color-neutral-500};
+  --text-on-primary: #{$color-neutral-0};
+
+  // Borders
+  --border-default: #{$color-neutral-300};
+  --border-muted: #{$color-neutral-400};
+}
+
+[data-theme="dark"] {
+  // Rough dark theme mapping (for future implementation)
+  --bg-surface: #{$color-neutral-1000};
+  --bg-surface-soft: #{$color-neutral-900};
+  --bg-surface-neutral: #{$color-neutral-800};
+  --bg-hero: #{$color-brand-900};
+  --bg-footer: #{$color-neutral-1000};
+
+  --text-primary: #{$color-neutral-0};
+  --text-secondary: #{$color-neutral-400};
+  --text-muted: #{$color-neutral-500};
+  --text-on-primary: #{$color-neutral-0};
+
+  --border-default: #{$color-neutral-800};
+  --border-muted: #{$color-neutral-600};
+}

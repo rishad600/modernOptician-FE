@@ -1,0 +1,64 @@
+@forward './styles/tokens/colors';
+@forward './styles/tokens/typography';
+@forward './styles/tokens/spacing';
+@forward './styles/tokens/radius';
+@forward './styles/tokens/shadow';
+@forward './styles/tokens/breakpoints';
+@use './styles/tokens/breakpoints' as *;
+
+// Basic resets and global application of tokens
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-family-base);
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  font-weight: var(--font-weight-semibold);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+// Layout Utilities
+.container {
+  max-width: var(--container-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-px);
+  padding-right: var(--container-px);
+  width: 100%;
+
+  @media (min-width: 1280px) {
+    padding-left: var(--container-px-desktop);
+    padding-right: var(--container-px-desktop);
+  }
+}
+
+.section {
+  padding-top: var(--section-py);
+  padding-bottom: var(--section-py);
+
+  @include mobile {
+    padding-top: var(--section-py-mobile);
+    padding-bottom: var(--section-py-mobile);
+  }
+}
