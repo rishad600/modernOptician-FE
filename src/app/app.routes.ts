@@ -12,5 +12,19 @@ export const routes: Routes = [
         component: HomeComponent
       }
     ]
+  },
+  {
+    path: 'auth',
+    loadComponent: () => import('./pages/auth/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+    children: [
+      {
+        path: 'login',
+        loadComponent: () => import('./pages/auth/login/login.component').then(m => m.LoginComponent)
+      },
+      {
+        path: 'signup',
+        loadComponent: () => import('./pages/auth/signup/signup.component').then(m => m.SignupComponent)
+      }
+    ]
   }
 ];
