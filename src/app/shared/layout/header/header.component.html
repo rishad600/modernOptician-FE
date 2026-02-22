@@ -4,15 +4,21 @@
       <img src="images/logo-color.svg" alt="Modern Optician Classes">
     </div>
 
-    <nav class="header__nav">
+    <button class="header__toggle" (click)="toggleMenu()" [class.is-open]="isMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="header__nav" [class.is-open]="isMenuOpen">
       <div class="header__nav-container">
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="header__link">Home</a>
-        <a routerLink="/courses" routerLinkActive="active" class="header__link">Courses</a>
-        <a routerLink="/about" routerLinkActive="active" class="header__link">About</a>
-        <a routerLink="/blog" routerLinkActive="active" class="header__link">Blog</a>
-        <a routerLink="/contact" routerLinkActive="active" class="header__link">Contact</a>
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()" class="header__link">Home</a>
+        <a routerLink="/courses" routerLinkActive="active" (click)="closeMenu()" class="header__link">Courses</a>
+        <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()" class="header__link">About</a>
+        <a routerLink="/blog" routerLinkActive="active" (click)="closeMenu()" class="header__link">Blog</a>
+        <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()" class="header__link">Contact</a>
       </div>
-      <button class="header__btn btn-primary" routerLink="/auth/signup">Sign Up</button>
+      <button class="header__btn btn-primary" routerLink="/auth/signup" (click)="closeMenu()">Sign Up</button>
     </nav>
   </div>
 </header>

@@ -41,15 +41,14 @@
     color: black;
     font-weight: var(--font-weight-semibold);
     max-width: 500px;
+
+    @include bp.mobile {
+      font-size: var(--font-size-4xl);
+    }
   }
 
   &__btn {
     width: fit-content;
-    padding: var(--space-2) var(--space-6);
-    background: var(--color-brand-600);
-    color: white;
-    border-radius: var(--radius-md);
-    font-family: var(--font-family-accent);
     
     @include bp.mobile {
       margin-top: var(--space-6);
@@ -82,6 +81,10 @@
     font-size: var(--font-size-3xl);
     line-height: var(--line-height-snug);
     color: #383838;
+
+    @include bp.mobile {
+      font-size: var(--font-size-xl);
+    }
   }
 
   &__author {
@@ -108,11 +111,19 @@
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-regular);
     color: black;
+
+    @include bp.mobile {
+      font-size: var(--font-size-lg);
+    }
   }
 
   &__role {
     font-size: var(--font-size-md);
     color: #636363;
+
+    @include bp.mobile {
+      font-size: var(--font-size-sm);
+    }
   }
 
   &__nav {

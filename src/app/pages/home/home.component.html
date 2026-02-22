@@ -12,26 +12,36 @@
         <div class="hero__actions">
           <button class="hero__btn btn-primary">
             GET STARTED
-            <span class="hero__icon-arrow"></span>
+            <span class="btn-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="white" fill-opacity="0.2"/><path d="M8 6L13 10L8 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
           </button>
           <button class="hero__btn btn-outline">
             Watch demo
-            <span class="hero__icon-play"></span>
+            <span class="btn-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#5783EC" fill-opacity="0.1"/><path d="M8 7L13 10L8 13" fill="#5783EC"/></svg>
+            </span>
           </button>
         </div>
       </div>
-      
+
       <div class="hero__image-container">
         <div class="hero__image-wrapper">
           <img src="images/Hero Image.jpg" alt="Optician Learning" class="hero__img">
+          <!-- Play Button Overlay -->
+          <div class="hero__play-overlay">
+            <button class="hero__play-btn">
+              <img src="images/Play.svg" alt="Play" class="hero__play-icon">
+            </button>
+          </div>
         </div>
         
         <!-- Floating Features Badge -->
         <div class="hero__features-badge">
           <ul class="hero__features-list">
-            <li><img src="images/Book.svg" alt="" width="20"> Structured Subjects</li>
-            <li><img src="images/video lesson.svg" alt="" width="20"> Self-Paced Learning</li>
-            <li><img src="images/Quizzes.svg" alt="" width="20"> Lifetime Access</li>
+            <li><img src="images/Book.svg" alt="" width="16"> Structured Subjects</li>
+            <li><img src="images/video lesson.svg" alt="" width="16"> Self-Paced Learning</li>
+            <li><img src="images/Quizzes.svg" alt="" width="16"> Lifetime Access</li>
           </ul>
         </div>
       </div>
@@ -65,8 +75,22 @@
   </div>
 </section>
 
-<!-- Courses Section (CTA Component) -->
-<app-cta></app-cta>
+<!-- Courses Section -->
+<section class="courses section">
+  <div class="container">
+    <div class="courses__header">
+      <h2 class="courses__title">Choose Your Learning Plan</h2>
+      <p class="courses__description">Invest in your professional future with our specialized optician courses.</p>
+    </div>
+
+    <div class="courses__grid">
+      <app-course-card 
+        *ngFor="let plan of plans" 
+        [plan]="plan">
+      </app-course-card>
+    </div>
+  </div>
+</section>
 
 <!-- Testimonials Section -->
 <app-testimonials></app-testimonials>

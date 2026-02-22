@@ -1,0 +1,17 @@
+<div class="course-card" [routerLink]="['/course', plan.id]">
+  <div class="course-card__image">
+    <img [src]="plan.image" [alt]="plan.title">
+  </div>
+  <div class="course-card__content">
+    <h3 class="course-card__title">{{ plan.title }}</h3>
+    <p class="course-card__price">{{ plan.price }}</p>
+    <hr class="course-card__divider">
+    <ul class="course-card__features">
+      <li *ngFor="let feature of plan.features">
+        <span class="course-card__tick"></span>
+        {{ feature }}
+      </li>
+    </ul>
+    <button class="course-card__btn">View Details</button>
+  </div>
+</div>

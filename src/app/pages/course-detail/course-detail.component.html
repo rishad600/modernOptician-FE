@@ -1,0 +1,134 @@
+<div class="course-detail">
+  <!-- Breadcrumbs -->
+  <div class="container">
+    <nav class="breadcrumbs">
+      <a routerLink="/">Home</a>
+      <span class="separator">/</span>
+      <a routerLink="/courses">Courses</a>
+      <span class="separator">/</span>
+      <span class="current">{{ course.title }}</span>
+    </nav>
+  </div>
+
+  <section class="course-hero">
+    <div class="container">
+      <div class="course-hero__layout">
+        <div class="course-hero__content">
+          <h1 class="course-hero__title">{{ course.title }}</h1>
+          <p class="course-hero__meta">
+            <span>By <strong>{{ course.instructor }}</strong></span>
+            <span class="dot"></span>
+            <span>{{ course.duration }}</span>
+            <span class="dot"></span>
+            <span>{{ course.lessons }} Lessons</span>
+          </p>
+          
+          <div class="video-container">
+            <div class="video-placeholder">
+              <img [src]="course.image" [alt]="course.title" class="video-thumbnail">
+              <div class="play-overlay">
+                <div class="play-button">
+                  <span class="play-icon"></span>
+                </div>
+                <p>Watch Preview</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="course-sidebar">
+          <div class="course-sidebar__card">
+            <div class="course-sidebar__price-group">
+              <span class="price">{{ course.price }}</span>
+              <span class="one-time">One-time payment</span>
+            </div>
+            
+            <button class="btn-primary full-width">ENROLL NOW</button>
+            
+            <div class="course-sidebar__features">
+              <h4 class="features-title">This course includes:</h4>
+              <ul>
+                <li><i class="icon-video"></i> {{ course.duration }} on-demand video</li>
+                <li><i class="icon-access"></i> Full lifetime access</li>
+                <li><i class="icon-device"></i> Access on mobile and TV</li>
+                <li><i class="icon-certificate"></i> Certificate of completion</li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="course-stats">
+      <div class="course-stats__grid">
+        <div class="stat-item" 
+             *ngFor="let stat of stats; let i = index"
+             [class.is-active]="i === activeStatIndex">
+          <div class="stat-item__icon" [ngClass]="stat.icon"></div>
+          <div class="stat-item__content">
+            <span class="stat-item__value">{{ stat.value }}</span>
+            <span class="stat-item__label">{{ stat.label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="course-content">
+    <div class="container">
+      <div class="course-content__layout">
+        <div class="course-content__main">
+          <div class="content-block">
+            <h2 class="content-title">Course Overview</h2>
+            <p class="content-text">{{ course.description }}</p>
+          </div>
+
+          <div class="content-block">
+            <h2 class="content-title">Curriculum</h2>
+            <div class="curriculum-list">
+              <div class="curriculum-item" *ngFor="let item of curriculum" [class.is-locked]="item.isLocked">
+                <div class="curriculum-item__info">
+                  <span class="status-icon" [class.locked]="item.isLocked"></span>
+                  <span class="item-title">{{ item.title }}</span>
+                </div>
+                <div class="curriculum-item__meta">
+                  <span class="duration">{{ item.duration }}</span>
+                  <span class="lock-indicator" *ngIf="item.isLocked"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="course-testimonials">
+    <div class="container">
+      <h2 class="course-testimonials__title">Student Feedbacks</h2>
+      <div class="course-testimonials__grid">
+        <div class="testimonial-card" *ngFor="let t of testimonials">
+          <div class="testimonial-card__header">
+            <div class="testimonial-card__avatar">
+              <img [src]="t.avatar" [alt]="t.author">
+            </div>
+            <div class="testimonial-card__info">
+              <h4 class="testimonial-card__name">{{ t.author }}</h4>
+              <p class="testimonial-card__role">{{ t.role }}</p>
+            </div>
+          </div>
+          <p class="testimonial-card__comment">"{{ t.comment }}"</p>
+          <div class="testimonial-card__rating">
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

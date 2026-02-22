@@ -42,13 +42,58 @@
     }
   }
 
+  &__toggle {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 1100;
+    cursor: pointer;
+
+    @include bp.mobile {
+      display: flex;
+    }
+
+    span {
+      width: 28px;
+      height: 2px;
+      background: var(--color-primary-dark);
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    &.is-open {
+      span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+      span:nth-child(2) { opacity: 0; }
+      span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+    }
+  }
+
   &__nav {
     display: flex;
     align-items: center;
     gap: var(--space-4);
 
     @include bp.mobile {
-      display: none; // Hidden for simplicity, would usually add a burger
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 280px;
+      height: 100vh;
+      background: white;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: var(--space-24) var(--space-8);
+      gap: var(--space-8);
+      transform: translateX(100%);
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+
+      &.is-open {
+        transform: translateX(0);
+        visibility: visible;
+      }
     }
   }
 
@@ -56,33 +101,64 @@
     display: flex;
     align-items: center;
     gap: 11px;
-    padding: var(--space-1) var(--space-3);
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5.35px);
-    border-radius: 72px;
+
+    @include bp.mobile {
+      flex-direction: column;
+      width: 100%;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
   }
 
   &__link {
-    padding: var(--space-2) var(--space-5);
-    border-radius: 48px;
+    padding: var(--space-2) var(--space-4);
     font-size: var(--font-size-md);
     font-family: var(--font-family-accent);
-    color: var(--color-primary-dark);
+    color: var(--text-muted);
     transition: all 0.3s ease;
+    font-weight: 500;
+
+    @include bp.mobile {
+      font-size: var(--font-size-lg);
+      width: 100%;
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--color-neutral-100);
+    }
 
     &:hover, &.active {
-      background: var(--bg-surface);
+      color: var(--color-primary-dark);
     }
   }
 
   &__btn {
     padding: var(--space-2) var(--space-5);
-    background: var(--color-brand-600);
-    color: var(--color-neutral-0);
+    background: var(--color-primary);
+    color: var(--text-on-primary);
     border-radius: var(--radius-md);
     font-size: var(--font-size-md);
     font-family: var(--font-family-accent);
-    width: 116px;
+    width: auto;
+    min-width: 100px;
     text-align: center;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    @include bp.mobile {
+      width: 100%;
+      margin-top: var(--space-4);
+      padding: var(--space-2) var(--space-5);
+      font-size: var(--font-size-sm);
+      min-width: 80px;
+    }
+
+    @media (max-width: 1024px) {
+      padding: var(--space-1) var(--space-4);
+      font-size: var(--font-size-sm);
+      min-width: 80px;
+    }
+
+    &:hover {
+      background: var(--color-primary-hover);
+    }
   }
 }

@@ -1,54 +1,17 @@
-@use 'styles/tokens/breakpoints' as bp;
+.course-card {
+  background: #5783EC;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: white;
 
-.cta {
-  background: #0A225C;
-  border-radius: 24px;
-  
-
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-
-    @include bp.mobile {
-      grid-template-columns: 1fr;
-      gap: var(--space-8);
-    }
-
-    @media (min-width: 640px) and (max-width: 1024px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  &__header {
-    text-align: center;
-    color: white;
-    margin-bottom: 53px;
-  }
-
-  &__title {
-    font-size: var(--font-size-7xl);
-    font-weight: var(--font-weight-semibold);
-    margin-bottom: 10px;
-  }
-
-  &__description {
-    font-size: var(--font-size-md);
-    opacity: 0.8;
-  }
-
-
-  &__card {
-    background: #5783EC;
-    border-radius: 12px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    color: white;
-  }
-
-  &__card-image {
+  &__image {
     height: 152px;
+    margin-left: 15px;
+    margin-right: 15px;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
     img {
       width: 100%;
       height: 100%;
@@ -56,20 +19,20 @@
     }
   }
 
-  &__card-content {
+  &__content {
     padding: 24px 23px 30px;
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
   }
 
-  &__card-title {
+  &__title {
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-semibold);
     line-height: 32px;
   }
 
-  &__card-price {
+  &__price {
     font-size: var(--font-size-6xl);
     font-weight: var(--font-weight-semibold);
     line-height: 52px;
@@ -101,7 +64,6 @@
     height: 21px;
     background: #3A6EE9;
     border-radius: 50%;
-    // Icon mask would be applied here
   }
 
   &__btn {

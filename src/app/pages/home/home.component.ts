@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TestimonialsComponent } from './sections/testimonials/testimonials.component';
-import { CtaComponent } from './sections/cta/cta.component';
+import { CourseCardComponent } from '../../shared/components/course-card/course-card.component';
 
 @Component({
   selector: 'app-home',
@@ -9,12 +9,43 @@ import { CtaComponent } from './sections/cta/cta.component';
   imports: [
     CommonModule,
     TestimonialsComponent,
-    CtaComponent
+    CourseCardComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+  plans = [
+    {
+      id: 'basic-optics',
+      title: 'Basic Optical Science',
+      price: '$80.00',
+      features: ['4 Video Chapters', 'Lens Physics & Optics', 'Frame Selection Basics', 'Lifetime Access'],
+      image: 'images/article-1.jpg'
+    },
+    {
+      id: 'clinical-procedures',
+      title: 'Clinical Procedures',
+      price: '$80.00',
+      features: ['4 Video Chapters', 'Lens Physics & Optics', 'Frame Selection Basics', 'Lifetime Access'],
+      image: 'images/article-1.jpg'
+    },
+    {
+      id: 'contact-lens',
+      title: 'Contact Lens Theory',
+      price: '$80.00',
+      features: ['4 Video Chapters', 'Lens Physics & Optics', 'Frame Selection Basics', 'Lifetime Access'],
+      image: 'images/article-1.jpg'
+    },
+    {
+      id: 'modern-tech',
+      title: 'Modern Lens Tech',
+      price: '$80.00',
+      features: ['4 Video Chapters', 'Lens Physics & Optics', 'Frame Selection Basics', 'Lifetime Access'],
+      image: 'images/article-1.jpg'
+    }
+  ];
+
   steps = [
     {
       number: '01',
