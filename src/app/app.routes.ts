@@ -18,6 +18,25 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'dashboard',
+    loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
+    children: [
+      {
+        path: '',
+        redirectTo: 'my-courses',
+        pathMatch: 'full'
+      },
+      {
+        path: 'my-courses',
+        loadComponent: () => import('./pages/dashboard/my-courses/my-courses.component').then(m => m.MyCoursesComponent)
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./pages/dashboard/profile/profile.component').then(m => m.ProfileComponent)
+      }
+    ]
+  },
+  {
     path: 'auth',
     loadComponent: () => import('./pages/auth/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
     children: [

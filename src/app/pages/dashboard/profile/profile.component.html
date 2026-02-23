@@ -1,0 +1,53 @@
+<div class="profile-settings">
+  <div class="dashboard-header">
+    <h1>Profile Settings</h1>
+    <p>Manage your account information and preferences.</p>
+  </div>
+
+  <div class="profile-card">
+    <div class="profile-card__header">
+      <div class="avatar-upload">
+        <img [src]="user.avatar" alt="Profile Picture">
+        <button class="btn-change-avatar">Change Photo</button>
+      </div>
+      <div class="header-text">
+        <h2>Personal Information</h2>
+        <p>This information will be displayed on your certificates.</p>
+      </div>
+    </div>
+
+    <form class="profile-form" (ngSubmit)="saveProfile()">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" [(ngModel)]="user.firstName">
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" [(ngModel)]="user.lastName">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" [(ngModel)]="user.email" disabled>
+        <span class="help-text">Contact support to change your email.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" [(ngModel)]="user.phone">
+      </div>
+
+      <div class="form-group">
+        <label for="bio">Bio</label>
+        <textarea id="bio" name="bio" rows="4" [(ngModel)]="user.bio"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary">Cancel</button>
+        <button type="submit" class="btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>

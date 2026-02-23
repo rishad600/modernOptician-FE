@@ -1,0 +1,54 @@
+<div class="dashboard">
+  <header class="dashboard__mobile-header">
+    <div class="dashboard__mobile-user">
+      <img [src]="user.avatar" [alt]="user.name">
+      <span>{{ user.name }}</span>
+    </div>
+    <button class="dashboard__mobile-toggle" (click)="isMobileMenuOpen = !isMobileMenuOpen" [class.is-open]="isMobileMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <nav class="dashboard__mobile-nav" [class.is-open]="isMobileMenuOpen">
+    <a *ngFor="let item of navItems" 
+       [routerLink]="item.route" 
+       routerLinkActive="is-active"
+       (click)="isMobileMenuOpen = false"
+       class="dashboard__mobile-nav-item">
+      <span>{{ item.label }}</span>
+    </a>
+    <a routerLink="/auth/login" class="dashboard__mobile-nav-item logout">Logout</a>
+  </nav>
+
+  <aside class="dashboard__sidebar">
+    <div class="dashboard__user">
+      <div class="dashboard__avatar">
+        <img [src]="user.avatar" [alt]="user.name">
+      </div>
+      <div class="dashboard__user-info">
+        <h3>{{ user.name }}</h3>
+        <p>{{ user.email }}</p>
+      </div>
+    </div>
+
+    <nav class="dashboard__nav">
+      <a *ngFor="let item of navItems" 
+         [routerLink]="item.route" 
+         routerLinkActive="is-active"
+         class="dashboard__nav-item">
+        <i class="icon-{{item.icon}}"></i>
+        <span>{{ item.label }}</span>
+      </a>
+      <a routerLink="/auth/login" class="dashboard__nav-item logout">
+        <i class="icon-logout"></i>
+        <span>Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="dashboard__content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
