@@ -2,15 +2,14 @@
   display: flex;
   min-height: 100vh;
   width: 100%;
-  background-color: var(--bg-surface-soft);
   font-family: var(--font-family-base);
+  background: radial-gradient(circle at 10% 20%, rgba(216, 241, 230, 0.46) 0.1%, rgba(233, 226, 226, 0.28) 90.1%),
+              radial-gradient(circle at 80% 10%, rgba(181, 204, 255, 0.6) 0%, rgba(255, 255, 255, 0) 50%),
+              radial-gradient(circle at 10% 90%, rgba(199, 218, 255, 0.5) 0%, rgba(255, 255, 255, 0) 50%);
+  background-color: var(--bg-surface);
 
   &__brand {
     flex: 1.2;
-    background: radial-gradient(circle at 10% 20%, rgba(216, 241, 230, 0.46) 0.1%, rgba(233, 226, 226, 0.28) 90.1%),
-                radial-gradient(circle at 80% 10%, rgba(181, 204, 255, 0.6) 0%, rgba(255, 255, 255, 0) 50%),
-                radial-gradient(circle at 10% 90%, rgba(199, 218, 255, 0.5) 0%, rgba(255, 255, 255, 0) 50%);
-    background-color: var(--bg-surface);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -94,11 +93,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--bg-surface);
     padding: var(--space-10);
 
     @media (max-width: 1024px) {
-      background-color: var(--bg-surface-soft);
       padding: var(--space-5);
     }
   }
