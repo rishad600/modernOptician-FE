@@ -1,0 +1,122 @@
+.auth-card {
+  padding: var(--space-10);
+  background: var(--bg-surface);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+
+  &__header {
+    margin-bottom: var(--space-8);
+  }
+
+  &__title {
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  &__subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+  }
+}
+
+.auth-form {
+  &__group {
+    margin-bottom: var(--space-6);
+  }
+
+  &__label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-2);
+  }
+
+  &__forgot {
+    font-size: var(--font-size-xs);
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+  }
+
+  &__label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+  }
+
+  &__input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--bg-surface-neutral);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    font-size: var(--font-size-md);
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.2s;
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+
+    &:focus {
+      border-color: var(--color-primary);
+      background-color: var(--bg-surface);
+    }
+  }
+
+  &__toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover {
+      color: var(--text-secondary);
+    }
+  }
+
+  &__submit {
+    width: 100%;
+    padding: 14px var(--space-4);
+    background-color: var(--color-primary);
+    color: var(--text-on-primary);
+    border: none;
+    border-radius: 8px;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-8);
+    transition: opacity 0.2s;
+    cursor: pointer;
+    
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  &__footer {
+    text-align: center;
+    font-size: var(--font-size-md);
+    color: var(--text-muted);
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: var(--font-weight-semibold);
+    }
+  }
+}

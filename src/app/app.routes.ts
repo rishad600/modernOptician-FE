@@ -37,12 +37,25 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'admin',
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./pages/admin/dashboard/admin-dashboard/admin-dashboard').then(m => m.AdminDashboardComponent)
+      }
+    ]
+  },
+  {
     path: 'auth',
     loadComponent: () => import('./pages/auth/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
     children: [
       {
         path: 'login',
         loadComponent: () => import('./pages/auth/login/login.component').then(m => m.LoginComponent)
+      },
+      {
+        path: 'admin-login',
+        loadComponent: () => import('./pages/auth/admin-login/admin-login.component').then(m => m.AdminLoginComponent)
       },
       {
         path: 'signup',

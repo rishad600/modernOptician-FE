@@ -8,6 +8,13 @@
               radial-gradient(circle at 10% 90%, rgba(199, 218, 255, 0.5) 0%, rgba(255, 255, 255, 0) 50%);
   background-color: var(--bg-surface);
 
+  &--centered {
+    & .auth-layout__form-container {
+      flex: 1;
+      width: 100%;
+    }
+  }
+
   &__brand {
     flex: 1.2;
     display: flex;

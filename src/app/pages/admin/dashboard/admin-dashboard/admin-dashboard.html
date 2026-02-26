@@ -1,0 +1,192 @@
+<div class="dashboard">
+  <!-- Mobile Header -->
+  <header class="dashboard__mobile-header">
+    <div class="dashboard__mobile-user">
+      <div class="avatar-placeholder small">A</div>
+      <span>{{ adminName }}</span>
+    </div>
+    <button class="dashboard__mobile-toggle" (click)="isMobileMenuOpen = !isMobileMenuOpen" [class.is-open]="isMobileMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Mobile Nav Overlay -->
+  <nav class="dashboard__mobile-nav" [class.is-open]="isMobileMenuOpen">
+    <a *ngFor="let item of navItems" 
+       [routerLink]="item.route" 
+       routerLinkActive="is-active"
+       (click)="isMobileMenuOpen = false"
+       class="dashboard__mobile-nav-item">
+      <span>{{ item.label }}</span>
+    </a>
+    <a routerLink="/auth/login" class="dashboard__mobile-nav-item logout">Logout</a>
+  </nav>
+
+  <!-- Sidebar -->
+  <aside class="dashboard__sidebar">
+    <div class="dashboard__user">
+      <div class="dashboard__avatar">
+        <div class="avatar-placeholder">A</div>
+      </div>
+      <div class="dashboard__user-info">
+        <h3>{{ adminName }}</h3>
+        <p>{{ adminEmail }}</p>
+      </div>
+    </div>
+
+    <nav class="dashboard__nav">
+      <a *ngFor="let item of navItems" 
+         [routerLink]="item.route" 
+         routerLinkActive="is-active"
+         class="dashboard__nav-item">
+        <i class="icon-{{item.icon}}"></i>
+        <span>{{ item.label }}</span>
+      </a>
+      <a routerLink="/auth/login" class="dashboard__nav-item logout">
+        <i class="icon-logout"></i>
+        <span>Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="dashboard__content">
+    <section class="admin-header">
+      <div class="admin-header__content">
+        <h1 class="admin-header__title">Overview</h1>
+      </div>
+      <div class="admin-header__actions">
+        <a routerLink="/admin/courses/new" class="btn-primary">Add Course</a>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="admin-stats">
+      <div class="stats-grid">
+        <div *ngFor="let stat of stats" class="stat-card">
+          <div class="stat-card__icon" [ngClass]="stat.icon"></div>
+          <div class="stat-card__info">
+            <span class="stat-card__label">{{ stat.label }}</span>
+            <div class="stat-card__footer">
+              <span class="stat-card__value">{{ stat.value }}</span>
+              <span class="stat-card__trend" [ngClass]="{'positive': stat.trend.startsWith('+')}">{{ stat.trend }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Analytics Section -->
+    <section class="admin-analytics">
+      <div class="analytics-grid">
+        <!-- Revenue Trend (Line Chart) -->
+        <div class="analytics-card chart-line">
+          <div class="analytics-card__header">
+            <h2 class="analytics-card__title">Revenue Trend (6 Months)</h2>
+            <span class="analytics-card__total">Total: ₹3,28,000</span>
+          </div>
+          <div class="chart-container">
+            <svg viewBox="0 0 500 150" class="line-chart">
+              <!-- Grid lines -->
+              <line x1="0" y1="0" x2="500" y2="0" stroke="#f1f5f9" />
+              <line x1="0" y1="50" x2="500" y2="50" stroke="#f1f5f9" />
+              <line x1="0" y1="100" x2="500" y2="100" stroke="#f1f5f9" />
+              <line x1="0" y1="150" x2="500" y2="150" stroke="#f1f5f9" />
+              
+              <!-- Data path -->
+              <path d="M0,120 C80,100 160,110 240,70 C320,30 400,90 500,50" 
+                    fill="none" stroke="var(--color-primary)" stroke-width="3" />
+              <!-- Points -->
+              <circle cx="0" cy="120" r="4" fill="var(--color-primary)" />
+              <circle cx="100" cy="105" r="4" fill="var(--color-primary)" />
+              <circle cx="200" cy="90" r="4" fill="var(--color-primary)" />
+              <circle cx="300" cy="40" r="4" fill="var(--color-primary)" />
+              <circle cx="400" cy="70" r="4" fill="var(--color-primary)" />
+              <circle cx="500" cy="50" r="4" fill="var(--color-primary)" />
+            </svg>
+            <div class="chart-labels">
+              <span *ngFor="let d of revenueData">{{ d.month }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Enrollment Breakdown (Bar Chart) -->
+        <div class="analytics-card chart-bar">
+          <div class="analytics-card__header">
+            <h2 class="analytics-card__title">Monthly Enrollment Breakdown</h2>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart-container">
+              <div *ngFor="let d of enrollmentData" class="bar-group">
+                <div class="bar-value">{{ d.count }}</div>
+                <div class="bar" [style.height.%]="(d.count / 150) * 100"></div>
+                <div class="bar-label">{{ d.course }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <!-- Features Section (Quick Links) -->
+    <section class="admin-features">
+      <h2 class="section-title">Core Admin Actions</h2>
+      <div class="features-grid">
+        <a routerLink="/admin/courses" class="feature-item">
+          <div class="feature-item__main">
+             <div class="feature-item__icon courses"></div>
+             <span class="feature-item__label">Manage Courses</span>
+          </div>
+        </a>
+        <a routerLink="/admin/students" class="feature-item">
+          <div class="feature-item__main">
+            <div class="feature-item__icon students"></div>
+            <span class="feature-item__label">Manage Students</span>
+          </div>
+        </a>
+        <a routerLink="/admin/payments" class="feature-item">
+          <div class="feature-item__main">
+            <div class="feature-item__icon payments"></div>
+            <span class="feature-item__label">View Payments</span>
+          </div>
+        </a>
+        <a routerLink="/admin/content" class="feature-item">
+          <div class="feature-item__main">
+            <div class="feature-item__icon content"></div>
+            <span class="feature-item__label">Blog/Content Mgmt</span>
+          </div>
+        </a>
+      </div>
+    </section>
+ 
+    <div class="admin-grid-two-cols">
+      <!-- Timeline Section -->
+      <section class="admin-timeline">
+        <h2 class="section-title">Recent Activity</h2>
+        <div class="timeline-feed">
+          <div *ngFor="let activity of recentActivities" class="timeline-item">
+            <div class="timeline-item__dot" [ngClass]="activity.type"></div>
+            <div class="timeline-item__content">
+              <p class="timeline-item__message">{{ activity.message }}</p>
+              <span class="timeline-item__time">{{ activity.time }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="admin-cta">
+        <h2 class="section-title">Quick Actions</h2>
+        <div class="cta-buttons">
+          <button class="btn-primary full-width">Add New Course</button>
+          <button class="btn-primary full-width secondary-btn">Marketing Video</button>
+          <button class="btn-primary full-width outline-btn">View Analytics</button>
+        </div>
+      </section>
+    </div>
+
+  </main>
+</div>

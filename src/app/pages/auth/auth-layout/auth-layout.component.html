@@ -1,6 +1,6 @@
-<div class="auth-layout">
+<div class="auth-layout" [class.auth-layout--centered]="isCentered">
   <!-- Left Side: Marketing/Background -->
-  <div class="auth-layout__brand">
+  <div class="auth-layout__brand" *ngIf="!isCentered">
     <div class="auth-layout__brand-content">
       <h1 class="auth-layout__title">Master Optician Skills at Your Own Pace</h1>
       <p class="auth-layout__description">

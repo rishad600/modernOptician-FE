@@ -1,18 +1,45 @@
 <div class="profile-settings">
   <div class="dashboard-header">
-    <h1>Profile Settings</h1>
-    <p>Manage your account information and preferences.</p>
+    <h1>My Profile</h1>
+    <p>Manage your account details and preferences.</p>
   </div>
 
-  <div class="profile-card">
+  <!-- Features List Section -->
+  <div class="features-list">
+    <div class="feature-item" (click)="scrollTo('contact-form')">
+      <div class="feature-icon"><i class="icon-user"></i></div>
+      <div class="feature-content">
+        <h3>Personal Details</h3>
+        <p>{{ user.firstName }} {{ user.lastName }}, {{ user.email }}</p>
+      </div>
+    </div>
+    <div class="feature-item" (click)="scrollTo('language-selector')">
+      <div class="feature-icon"><i class="icon-globe"></i></div>
+      <div class="feature-content">
+        <h3>Language Preference</h3>
+        <p>{{ user.languagePreference === 'en' ? 'English' : 'Spanish' }}</p>
+      </div>
+    </div>
+    <div class="feature-item" (click)="scrollTo('password-form')">
+      <div class="feature-icon"><i class="icon-lock"></i></div>
+      <div class="feature-content">
+        <h3>Change Password</h3>
+        <p>Last updated 3 months ago</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Form Section -->
+  <div id="contact-form" class="profile-card">
     <div class="profile-card__header">
       <div class="avatar-upload">
-        <img [src]="user.avatar" alt="Profile Picture">
+        <img *ngIf="user.avatar" [src]="user.avatar" alt="Profile Picture">
+        <div *ngIf="!user.avatar" class="avatar-placeholder">{{ getInitials() }}</div>
         <button class="btn-change-avatar">Change Photo</button>
       </div>
       <div class="header-text">
         <h2>Personal Information</h2>
-        <p>This information will be displayed on your certificates.</p>
+        <p>Update your contact information.</p>
       </div>
     </div>
 
@@ -38,16 +65,69 @@
         <label for="phone">Phone Number</label>
         <input type="tel" id="phone" name="phone" [(ngModel)]="user.phone">
       </div>
+    </form>
+  </div>
 
+  <!-- Language Preference Section -->
+  <div id="language-selector" class="profile-card mt-6">
+    <div class="header-text mb-6">
+      <h2>Language Preference</h2>
+      <p>Choose your preferred language for the application.</p>
+    </div>
+    <div class="form-group">
+      <label for="language">Select Language</label>
+      <select id="language" name="language" [(ngModel)]="user.languagePreference" class="custom-select">
+        <option value="en">English</option>
+        <option value="es">Spanish</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Change Password Section -->
+  <div id="password-form" class="profile-card mt-6">
+    <div class="header-text mb-6">
+      <h2>Change Password</h2>
+      <p>Ensure your account is using a long, random password to stay secure.</p>
+    </div>
+    <form class="profile-form">
       <div class="form-group">
-        <label for="bio">Bio</label>
-        <textarea id="bio" name="bio" rows="4" [(ngModel)]="user.bio"></textarea>
+        <label for="oldPassword">Current Password</label>
+        <input type="password" id="oldPassword" name="oldPassword" [(ngModel)]="user.oldPassword">
       </div>
-
-      <div class="form-actions">
-        <button type="button" class="btn-secondary">Cancel</button>
-        <button type="submit" class="btn-primary">Save Changes</button>
+      <div class="form-row mt-4">
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" name="newPassword" [(ngModel)]="user.newPassword">
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm New Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="user.confirmPassword">
+        </div>
       </div>
     </form>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="cta-section mt-8">
+    <button type="submit" (click)="saveProfile()" class="btn-primary btn-lg">Save Changes</button>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="faq-section mt-12">
+    <div class="header-text mb-8">
+      <h2>Frequently Asked Questions</h2>
+      <p>Quick answers to common questions about account management.</p>
+    </div>
+    <div class="faq-list">
+      <div *ngFor="let faq of faqs; let i = index" class="faq-item" [class.is-open]="faq.isOpen">
+        <button class="faq-trigger" (click)="toggleFaq(i)">
+          <span>{{ faq.question }}</span>
+          <i class="icon-chevron-down"></i>
+        </button>
+        <div class="faq-content" *ngIf="faq.isOpen">
+          <p>{{ faq.answer }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
