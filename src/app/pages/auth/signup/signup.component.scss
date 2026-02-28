@@ -51,6 +51,10 @@
     outline: none;
     transition: all 0.2s;
 
+    &.ng-invalid.ng-touched {
+      border-color: #ef4444;
+    }
+
     &::placeholder {
       color: var(--text-muted);
     }
@@ -74,6 +78,13 @@
     font-size: var(--font-size-xs);
     color: var(--text-muted);
     margin-top: var(--space-2);
+  }
+
+  &__error {
+    color: #ef4444;
+    font-size: var(--font-size-xs);
+    margin-top: 4px;
+    margin-bottom: 4px;
   }
 
   &__terms {

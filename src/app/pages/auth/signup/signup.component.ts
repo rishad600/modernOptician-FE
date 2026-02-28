@@ -14,6 +14,7 @@ import { ApiService } from '../../../core/services/api.service';
 export class SignupComponent {
   signupForm: FormGroup;
   isSubmitting = false;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -27,6 +28,10 @@ export class SignupComponent {
       repeatPassword: ['', Validators.required],
       terms: [false, Validators.requiredTrue]
     });
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit() {
@@ -46,13 +51,21 @@ export class SignupComponent {
 
     console.log('Sending registration request:', requestBody);
 
-    this.apiService.post<any>('/web/v1/user/register', requestBody).subscribe({
+    this.apiService.post<any>('/web/user/profile/register', requestBody).subscribe({
       next: (response) => {
         console.log('Registration successful:', response);
         this.isSubmitting = false;
 
         if (response && response.data && response.data.token) {
           localStorage.setItem('token', response.data.token);
+
+          if (response.data.user) {
+            localStorage.setItem('_id', response.data.user._id);
+            localStorage.setItem('name', response.data.user.name);
+            localStorage.setItem('email', response.data.user.email);
+            localStorage.setItem('role', 'user');
+          }
+
           this.router.navigate(['/dashboard/my-courses']);
         }
 

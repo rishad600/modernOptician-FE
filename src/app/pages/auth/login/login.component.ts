@@ -14,6 +14,7 @@ import { ApiService } from '../../../core/services/api.service';
 export class LoginComponent {
   loginForm: FormGroup;
   isSubmitting = false;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -24,6 +25,10 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit() {
@@ -37,13 +42,21 @@ export class LoginComponent {
     const requestBody = this.loginForm.value;
     console.log('Sending login request:', requestBody);
 
-    this.apiService.post<any>('/web/v1/user/login', requestBody).subscribe({
+    this.apiService.post<any>('/web/user/profile/login', requestBody).subscribe({
       next: (response) => {
         console.log('Login successful:', response);
         this.isSubmitting = false;
 
         if (response && response.data && response.data.token) {
           localStorage.setItem('token', response.data.token);
+
+          if (response.data.user) {
+            localStorage.setItem('_id', response.data.user._id);
+            localStorage.setItem('name', response.data.user.name);
+            localStorage.setItem('email', response.data.user.email);
+            localStorage.setItem('role', 'user');
+          }
+
           this.router.navigate(['/dashboard']);
         }
       },

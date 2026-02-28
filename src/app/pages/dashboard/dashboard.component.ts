@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +17,8 @@ export class DashboardComponent {
     avatar: ''
   };
 
+  constructor(private router: Router) { }
+
   navItems = [
     { label: 'My Courses', icon: 'book', route: 'my-courses' },
     { label: 'Profile Settings', icon: 'settings', route: 'profile' }
@@ -28,5 +30,14 @@ export class DashboardComponent {
       return `${names[0].charAt(0)}${names[1].charAt(0)}`.toUpperCase();
     }
     return this.user.name.charAt(0).toUpperCase();
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('_id');
+    localStorage.removeItem('name');
+    localStorage.removeItem('email');
+    localStorage.removeItem('role');
+    this.router.navigate(['/auth/login']);
   }
 }

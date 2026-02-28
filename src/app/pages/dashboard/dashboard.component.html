@@ -5,7 +5,8 @@
       <div *ngIf="!user.avatar" class="avatar-placeholder small">{{ getInitials() }}</div>
       <span>{{ user.name }}</span>
     </div>
-    <button class="dashboard__mobile-toggle" (click)="isMobileMenuOpen = !isMobileMenuOpen" [class.is-open]="isMobileMenuOpen">
+    <button class="dashboard__mobile-toggle" (click)="isMobileMenuOpen = !isMobileMenuOpen"
+      [class.is-open]="isMobileMenuOpen">
       <span></span>
       <span></span>
       <span></span>
@@ -13,14 +14,11 @@
   </header>
 
   <nav class="dashboard__mobile-nav" [class.is-open]="isMobileMenuOpen">
-    <a *ngFor="let item of navItems" 
-       [routerLink]="item.route" 
-       routerLinkActive="is-active"
-       (click)="isMobileMenuOpen = false"
-       class="dashboard__mobile-nav-item">
+    <a *ngFor="let item of navItems" [routerLink]="item.route" routerLinkActive="is-active"
+      (click)="isMobileMenuOpen = false" class="dashboard__mobile-nav-item">
       <span>{{ item.label }}</span>
     </a>
-    <a routerLink="/auth/login" class="dashboard__mobile-nav-item logout">Logout</a>
+    <a routerLink="/auth/login" class="dashboard__mobile-nav-item logout" (click)="logout()">Logout</a>
   </nav>
 
   <aside class="dashboard__sidebar">
@@ -36,14 +34,12 @@
     </div>
 
     <nav class="dashboard__nav">
-      <a *ngFor="let item of navItems" 
-         [routerLink]="item.route" 
-         routerLinkActive="is-active"
-         class="dashboard__nav-item">
+      <a *ngFor="let item of navItems" [routerLink]="item.route" routerLinkActive="is-active"
+        class="dashboard__nav-item">
         <i class="icon-{{item.icon}}"></i>
         <span>{{ item.label }}</span>
       </a>
-      <a routerLink="/auth/login" class="dashboard__nav-item logout">
+      <a routerLink="/auth/login" class="dashboard__nav-item logout" (click)="logout()">
         <i class="icon-logout"></i>
         <span>Logout</span>
       </a>

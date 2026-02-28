@@ -64,6 +64,10 @@
     outline: none;
     transition: all 0.2s;
 
+    &.ng-invalid.ng-touched {
+      border-color: #ef4444;
+    }
+
     &::placeholder {
       color: var(--text-muted);
     }
@@ -78,15 +82,24 @@
     position: absolute;
     right: 12px;
     color: var(--text-muted);
+
     &:hover {
       color: var(--text-secondary);
     }
+  }
+
+  &__error {
+    color: #ef4444;
+    font-size: var(--font-size-xs);
+    margin-top: 4px;
+    margin-bottom: 4px;
   }
 
   &__divider {
     position: relative;
     text-align: center;
     margin: var(--space-8) 0;
+
     &::before {
       content: '';
       position: absolute;
@@ -96,6 +109,7 @@
       height: 1px;
       background: var(--border-default);
     }
+
     span {
       position: relative;
       background: var(--bg-surface);
@@ -147,6 +161,7 @@
     font-weight: var(--font-weight-bold);
     margin-bottom: var(--space-8);
     transition: opacity 0.2s;
+
     &:hover {
       opacity: 0.9;
     }
@@ -156,6 +171,7 @@
     text-align: center;
     font-size: var(--font-size-md);
     color: var(--text-muted);
+
     a {
       color: var(--color-primary);
       text-decoration: none;

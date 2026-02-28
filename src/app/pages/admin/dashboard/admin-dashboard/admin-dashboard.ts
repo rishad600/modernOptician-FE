@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -51,4 +51,15 @@ export class AdminDashboardComponent {
     { type: 'payment', message: 'Payment of $80 confirmed for Course B', time: '1 hour ago' },
     { type: 'enrollment', message: 'Mike Jones joined the "Modern Optician" masterclass', time: '3 hours ago' },
   ];
+
+  constructor(private router: Router) { }
+
+  logout() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('name');
+    localStorage.removeItem('role');
+    localStorage.removeItem('token');
+
+    this.router.navigate(['/auth/admin-login']);
+  }
 }

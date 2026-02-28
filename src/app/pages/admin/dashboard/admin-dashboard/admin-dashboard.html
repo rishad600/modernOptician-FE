@@ -5,7 +5,8 @@
       <div class="avatar-placeholder small">A</div>
       <span>{{ adminName }}</span>
     </div>
-    <button class="dashboard__mobile-toggle" (click)="isMobileMenuOpen = !isMobileMenuOpen" [class.is-open]="isMobileMenuOpen">
+    <button class="dashboard__mobile-toggle" (click)="isMobileMenuOpen = !isMobileMenuOpen"
+      [class.is-open]="isMobileMenuOpen">
       <span></span>
       <span></span>
       <span></span>
@@ -14,14 +15,11 @@
 
   <!-- Mobile Nav Overlay -->
   <nav class="dashboard__mobile-nav" [class.is-open]="isMobileMenuOpen">
-    <a *ngFor="let item of navItems" 
-       [routerLink]="item.route" 
-       routerLinkActive="is-active"
-       (click)="isMobileMenuOpen = false"
-       class="dashboard__mobile-nav-item">
+    <a *ngFor="let item of navItems" [routerLink]="item.route" routerLinkActive="is-active"
+      (click)="isMobileMenuOpen = false" class="dashboard__mobile-nav-item">
       <span>{{ item.label }}</span>
     </a>
-    <a routerLink="/auth/login" class="dashboard__mobile-nav-item logout">Logout</a>
+    <a (click)="logout()" class="dashboard__mobile-nav-item logout" style="cursor: pointer;">Logout</a>
   </nav>
 
   <!-- Sidebar -->
@@ -37,14 +35,12 @@
     </div>
 
     <nav class="dashboard__nav">
-      <a *ngFor="let item of navItems" 
-         [routerLink]="item.route" 
-         routerLinkActive="is-active"
-         class="dashboard__nav-item">
+      <a *ngFor="let item of navItems" [routerLink]="item.route" routerLinkActive="is-active"
+        class="dashboard__nav-item">
         <i class="icon-{{item.icon}}"></i>
         <span>{{ item.label }}</span>
       </a>
-      <a routerLink="/auth/login" class="dashboard__nav-item logout">
+      <a (click)="logout()" class="dashboard__nav-item logout" style="cursor: pointer;">
         <i class="icon-logout"></i>
         <span>Logout</span>
       </a>
@@ -71,7 +67,8 @@
             <span class="stat-card__label">{{ stat.label }}</span>
             <div class="stat-card__footer">
               <span class="stat-card__value">{{ stat.value }}</span>
-              <span class="stat-card__trend" [ngClass]="{'positive': stat.trend.startsWith('+')}">{{ stat.trend }}</span>
+              <span class="stat-card__trend" [ngClass]="{'positive': stat.trend.startsWith('+')}">{{ stat.trend
+                }}</span>
             </div>
           </div>
         </div>
@@ -94,10 +91,10 @@
               <line x1="0" y1="50" x2="500" y2="50" stroke="#f1f5f9" />
               <line x1="0" y1="100" x2="500" y2="100" stroke="#f1f5f9" />
               <line x1="0" y1="150" x2="500" y2="150" stroke="#f1f5f9" />
-              
+
               <!-- Data path -->
-              <path d="M0,120 C80,100 160,110 240,70 C320,30 400,90 500,50" 
-                    fill="none" stroke="var(--color-primary)" stroke-width="3" />
+              <path d="M0,120 C80,100 160,110 240,70 C320,30 400,90 500,50" fill="none" stroke="var(--color-primary)"
+                stroke-width="3" />
               <!-- Points -->
               <circle cx="0" cy="120" r="4" fill="var(--color-primary)" />
               <circle cx="100" cy="105" r="4" fill="var(--color-primary)" />
@@ -130,15 +127,15 @@
       </div>
     </section>
 
-    
+
     <!-- Features Section (Quick Links) -->
     <section class="admin-features">
       <h2 class="section-title">Core Admin Actions</h2>
       <div class="features-grid">
         <a routerLink="/admin/courses" class="feature-item">
           <div class="feature-item__main">
-             <div class="feature-item__icon courses"></div>
-             <span class="feature-item__label">Manage Courses</span>
+            <div class="feature-item__icon courses"></div>
+            <span class="feature-item__label">Manage Courses</span>
           </div>
         </a>
         <a routerLink="/admin/students" class="feature-item">
@@ -161,7 +158,7 @@
         </a>
       </div>
     </section>
- 
+
     <div class="admin-grid-two-cols">
       <!-- Timeline Section -->
       <section class="admin-timeline">
