@@ -1,0 +1,74 @@
+<div class="courses-page">
+  <!-- 1. Filter Section -->
+  <section class="filter-section">
+    <div class="container">
+      <div class="filter-bar">
+        <div class="search-box">
+          <input 
+            type="text" 
+            placeholder="Search for a course..." 
+            (input)="onSearch($event)"
+            class="search-input"
+          >
+        </div>
+
+        <div class="category-filters">
+          <button 
+            [class.active]="selectedCategory === 'all'" 
+            (click)="filterByCategory('all')"
+            class="filter-btn"
+          >
+            All Courses
+          </button>
+          <button 
+            [class.active]="selectedCategory === 'clinical'" 
+            (click)="filterByCategory('clinical')"
+            class="filter-btn"
+          >
+            Clinical
+          </button>
+          <button 
+            [class.active]="selectedCategory === 'technical'" 
+            (click)="filterByCategory('technical')"
+            class="filter-btn"
+          >
+            Technical
+          </button>
+          <button 
+            [class.active]="selectedCategory === 'business'" 
+            (click)="filterByCategory('business')"
+            class="filter-btn"
+          >
+            Business
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Listing Section -->
+  <section class="listing-section">
+    <div class="container">
+      <div class="results-info" *ngIf="filteredCourses.length > 0">
+        Showing {{ filteredCourses.length }} courses
+      </div>
+
+      <div class="courses-grid" *ngIf="filteredCourses.length > 0">
+        <app-course-card 
+          *ngFor="let course of filteredCourses" 
+          [plan]="course"
+        ></app-course-card>
+      </div>
+
+      <!-- No Results State -->
+      <div class="no-results" *ngIf="filteredCourses.length === 0">
+        <div class="no-results__content">
+          <img src="C:\Users\Rishad\.gemini\antigravity\brain\52285414-06b5-466b-b03f-c9b462696e47\no_results_illustration_1773166835323.png" alt="No courses found" class="no-results__img">
+          <h3>No courses found</h3>
+          <p>We couldn't find any courses matching your search or filter. Try a different keyword or category.</p>
+          <button class="btn-outline" (click)="filterByCategory('all')">View All Courses</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
