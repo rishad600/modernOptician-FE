@@ -1,0 +1,263 @@
+@use 'styles/tokens/breakpoints' as bp;
+
+.blog-detail-page {
+  padding-top: 120px;
+  background: white;
+  min-height: 100vh;
+}
+
+.container--narrow {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.article-hero {
+  padding: 4rem 0 3rem;
+  text-align: center;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+
+  .dot { color: #cbd5e1; }
+}
+
+.tag-badge {
+  color: #3b82f6;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+}
+
+.article-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.02em;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1e293b;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+
+  &--lg {
+    width: 64px;
+    height: 64px;
+    font-size: 1.5rem;
+  }
+}
+
+.author-details {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.author-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.9375rem;
+}
+
+.author-role {
+  color: #94a3b8;
+  font-size: 0.8125rem;
+}
+
+.article-featured-image {
+  border-radius: 24px;
+  overflow: hidden;
+  margin-bottom: 4rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  height: 400px;
+  width: 100%;
+
+  @include bp.mobile {
+    height: 250px;
+    border-radius: 16px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.article-content {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #334155;
+  margin-bottom: 5rem;
+
+  ::ng-deep {
+    p { margin-bottom: 1.5rem; }
+    
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 3rem 0 1.5rem;
+      line-height: 1.3;
+    }
+
+    blockquote {
+      border-left: 4px solid #3b82f6;
+      padding: 1.5rem 2rem;
+      margin: 3rem 0;
+      background: #f8fafc;
+      font-style: italic;
+      font-size: 1.25rem;
+      color: #1e293b;
+      border-radius: 0 12px 12px 0;
+    }
+
+    ul {
+      margin-bottom: 2rem;
+      padding-left: 1.5rem;
+      list-style-type: disc;
+
+      li { margin-bottom: 0.75rem; }
+    }
+  }
+}
+
+.author-bio-box {
+  background: #f1f5f9;
+  border-radius: 20px;
+  padding: 2.5rem;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 5rem;
+
+  h4 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #0f172a;
+  }
+
+  p {
+    color: #475569;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+.related-articles {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 5rem;
+  margin-bottom: 4rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  color: #0f172a;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.related-card {
+  cursor: pointer;
+  
+  &:hover {
+    .related-card__image img { transform: scale(1.05); }
+    h4 { color: #3b82f6; }
+  }
+}
+
+.related-card__image {
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+}
+
+.related-card__content {
+  h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+    transition: color 0.2s;
+  }
+
+  .read-more {
+    font-size: 0.8125rem;
+    color: #94a3b8;
+    font-weight: 600;
+  }
+}
+
+.back-to-blog {
+  margin-bottom: 6rem;
+}
+
+.btn-text {
+  color: #64748b;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover { color: #1e293b; }
+}
+
+.not-found {
+  padding: 10rem 0;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .author-bio-box {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .related-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -22,6 +22,14 @@ export const routes: Routes = [
       {
         path: 'courses',
         loadComponent: () => import('./pages/courses/courses.component').then(m => m.CoursesComponent)
+      },
+      {
+        path: 'blog',
+        loadComponent: () => import('./pages/blog/listing').then(m => m.BlogComponent)
+      },
+      {
+        path: 'blog/:id',
+        loadComponent: () => import('./pages/blog-detail/detail').then(m => m.BlogDetailComponent)
       }
     ]
   },

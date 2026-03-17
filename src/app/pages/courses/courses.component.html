@@ -12,7 +12,8 @@
           >
         </div>
 
-        <div class="category-filters">
+        <!-- Hiding category filters for now -->
+        <!-- <div class="category-filters">
           <button 
             [class.active]="selectedCategory === 'all'" 
             (click)="filterByCategory('all')"
@@ -20,27 +21,16 @@
           >
             All Courses
           </button>
-          <button 
-            [class.active]="selectedCategory === 'clinical'" 
-            (click)="filterByCategory('clinical')"
-            class="filter-btn"
-          >
-            Clinical
-          </button>
-          <button 
-            [class.active]="selectedCategory === 'technical'" 
-            (click)="filterByCategory('technical')"
-            class="filter-btn"
-          >
-            Technical
-          </button>
-          <button 
-            [class.active]="selectedCategory === 'business'" 
-            (click)="filterByCategory('business')"
-            class="filter-btn"
-          >
-            Business
-          </button>
+          ...
+        </div> -->
+
+        <div class="sort-box">
+          <span class="sort-label">Sort by:</span>
+          <select class="sort-select" (change)="onSort($event)">
+            <option value="latest">Latest</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+          </select>
         </div>
       </div>
     </div>

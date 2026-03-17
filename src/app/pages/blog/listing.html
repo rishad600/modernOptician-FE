@@ -1,0 +1,71 @@
+<div class="blog-page">
+  <h1 class="sr-only">Modern Optician Blog</h1>
+  
+  <!-- Filter & Search Section -->
+  <section class="filter-section">
+    <div class="container">
+      <div class="filter-bar">
+        <div class="search-box">
+          <i class="search-icon"></i>
+          <input 
+            type="text" 
+            placeholder="Search articles..." 
+            (input)="onSearch($event)"
+            class="search-input"
+          >
+        </div>
+
+        <div class="tag-filters">
+          <button 
+            *ngFor="let tag of allTags"
+            [class.active]="selectedTag === tag" 
+            (click)="filterByTag(tag)"
+            class="tag-btn"
+          >
+            {{ tag }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Listing Section -->
+  <section class="listing-section">
+    <div class="container">
+      <div class="results-info" *ngIf="filteredBlogs.length > 0">
+        Showing {{ filteredBlogs.length }} articles
+      </div>
+
+      <div class="blog-grid" *ngIf="filteredBlogs.length > 0">
+        <article class="blog-card" *ngFor="let blog of filteredBlogs" [routerLink]="['/blog', blog.id]">
+          <div class="blog-card__image-wrapper">
+            <img [src]="blog.image" [alt]="blog.title" class="blog-card__image">
+            <div class="blog-card__tags">
+              <span class="tag-badge" *ngFor="let tag of blog.tags.slice(0, 2)">{{ tag }}</span>
+            </div>
+          </div>
+          <div class="blog-card__content">
+            <div class="blog-card__meta">
+              <span class="blog-card__date">{{ blog.date }}</span>
+              <span class="blog-card__author">By {{ blog.author }}</span>
+            </div>
+            <h3 class="blog-card__title">{{ blog.title }}</h3>
+            <p class="blog-card__excerpt">{{ blog.excerpt }}</p>
+            <div class="blog-card__footer">
+              <span class="read-more">Read Article <i class="arrow-icon"></i></span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- No Results State -->
+      <div class="no-results" *ngIf="filteredBlogs.length === 0">
+        <div class="no-results__content">
+          <h3>No articles found</h3>
+          <p>We couldn't find any articles matching your search. Try different keywords or tags.</p>
+          <button class="btn-outline" (click)="filterByTag('All')">Clear All Filters</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

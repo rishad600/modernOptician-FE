@@ -56,11 +56,11 @@ export class AboutComponent {
     { label: 'Happy Students', value: '10K+' },
     { label: 'Video Lessons', value: '500+' },
     { label: 'Expert Instructors', value: '25+' },
-    { label: 'Certification Rate', value: '98%' }
+    { label: 'Clinical Case Studies', value: '200+' }
   ];
 
   milestones = [
-    { year: '2020', title: 'Platform Launch', description: 'Started with our first basic optician certification course.' },
+    { year: '2020', title: 'Platform Launch', description: 'Started with our first basic optician training course.' },
     { year: '2021', title: 'Global Reach', description: 'Expanded to over 15 countries with localized content.' },
     { year: '2022', title: 'Industry Partners', description: 'Collaborated with major eyewear brands for practical training.' },
     { year: '2023', title: 'Digital Innovation', description: 'Integrated AR tools for virtual frame fitting practice.' }
@@ -69,7 +69,7 @@ export class AboutComponent {
   benefits = [
     { title: 'Flexible Learning', description: 'Study at your own pace from anywhere in the world.', icon: 'images/Book.svg' },
     { title: 'Expert Guidance', description: 'Direct access to industry veterans and clinical experts.', icon: 'images/video lesson.svg' },
-    { title: 'Career Growth', description: 'Get certified and unlock new professional opportunities.', icon: 'images/Quizzes.svg' }
+    { title: 'Career Growth', description: 'Upskill your knowledge and unlock new professional opportunities.', icon: 'images/Quizzes.svg' }
   ];
 
   setTab(tab: 'mission' | 'vision' | 'process'): void {

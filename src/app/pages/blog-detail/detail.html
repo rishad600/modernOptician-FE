@@ -1,0 +1,70 @@
+<div class="blog-detail-page" *ngIf="blog">
+  <!-- Article Hero -->
+  <header class="article-hero">
+    <div class="container--narrow">
+      <div class="article-meta">
+        <span class="tag-badge" *ngFor="let tag of blog.tags">{{ tag }}</span>
+        <span class="dot">•</span>
+        <span class="article-date">{{ blog.date }}</span>
+      </div>
+      <h1 class="article-title">{{ blog.title }}</h1>
+      <div class="author-info">
+        <div class="author-avatar">{{ blog.author.charAt(0) }}</div>
+        <div class="author-details">
+          <span class="author-name">{{ blog.author }}</span>
+          <span class="author-role">Author</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="article-featured-image">
+      <img [src]="blog.image" [alt]="blog.title">
+    </div>
+  </div>
+
+  <div class="container--narrow">
+    <!-- Article Content -->
+    <article class="article-content">
+      <div [innerHTML]="blog.content"></div>
+    </article>
+
+    <!-- Author Bio Box -->
+    <div class="author-bio-box">
+      <div class="author-avatar author-avatar--lg">{{ blog.author.charAt(0) }}</div>
+      <div class="author-bio-details">
+        <h4>About {{ blog.author }}</h4>
+        <p>{{ blog.authorBio }}</p>
+      </div>
+    </div>
+
+    <!-- Related Articles -->
+    <section class="related-articles" *ngIf="relatedBlogs.length > 0">
+      <h3 class="section-title">Related Articles</h3>
+      <div class="related-grid">
+        <article class="related-card" *ngFor="let rel of relatedBlogs" [routerLink]="['/blog', rel.id]">
+          <div class="related-card__image">
+            <img [src]="rel.image" [alt]="rel.title">
+          </div>
+          <div class="related-card__content">
+            <h4>{{ rel.title }}</h4>
+            <span class="read-more">Read More</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="back-to-blog">
+      <a routerLink="/blog" class="btn-text">← Back to all articles</a>
+    </div>
+  </div>
+</div>
+
+<div class="not-found" *ngIf="!blog">
+  <div class="container">
+    <h2>Article not found</h2>
+    <p>The article you are looking for does not exist or has been moved.</p>
+    <button class="btn-primary" routerLink="/blog">Return to Blog</button>
+  </div>
+</div>

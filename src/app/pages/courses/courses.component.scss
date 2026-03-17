@@ -11,15 +11,13 @@
 }
 
 .filter-section {
-  padding: 40px 0;
-  border-bottom: 1px solid var(--color-border);
-  position: sticky;
-  top: 100px;
+  padding: 30px 0;
   background-color: var(--bg-surface);
   z-index: 10;
 
   @include bp.mobile {
     top: 80px;
+    padding: 20px 0;
   }
 }
 
@@ -28,11 +26,17 @@
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
+  padding: 1rem 1.5rem;
+  background-color: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl, 1rem);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 
   @include bp.tablet {
     flex-direction: column;
     align-items: stretch;
     gap: 1.5rem;
+    padding: 1.25rem;
   }
 }
 
@@ -56,17 +60,18 @@
 
   .search-input {
     width: 100%;
-    padding: 1rem 1rem 1rem 3.5rem;
+    padding: 0.875rem 1rem 0.875rem 3.5rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     font-size: 1rem;
     transition: all 0.3s ease;
-    background-color: white;
+    background-color: var(--bg-surface, #f9fafb);
 
     &:focus {
       outline: none;
       border-color: var(--color-blue);
       box-shadow: 0 0 0 4px rgba(87, 131, 236, 0.1);
+      background-color: white;
     }
   }
 
@@ -96,45 +101,57 @@
   }
 }
 
-.category-filters {
+.sort-box {
   display: flex;
-  gap: 0.75rem;
-  overflow-x: auto;
-  padding-bottom: 0.25rem;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--bg-surface, #f9fafb);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
 
-  &::-webkit-scrollbar {
-    display: none;
+  &:focus-within {
+    border-color: var(--color-blue);
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(87, 131, 236, 0.1);
   }
 
-  .filter-btn {
-    padding: 0.75rem 1.5rem;
-    border: 1px solid var(--color-border);
-    border-radius: 100px;
-    background: white;
-    font-weight: 600;
+  .sort-label {
     font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-muted);
     white-space: nowrap;
+  }
+
+  .sort-select {
+    border: none;
+    background: transparent;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
     cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--text-secondary);
+    padding-right: 1.5rem;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 1rem;
 
-    &:hover {
-      border-color: var(--color-blue);
-      color: var(--color-blue);
-    }
-
-    &.active {
-      background-color: var(--color-blue);
-      border-color: var(--color-blue);
-      color: white;
+    option {
+      background-color: white;
+      color: var(--text-primary);
     }
   }
 }
 
+.category-filters {
+  display: none; // Hidden as requested
+}
+
 .listing-section {
-  padding: 60px 0 100px;
+  padding: 20px 0 100px;
 
   .results-info {
     margin-bottom: 2rem;
