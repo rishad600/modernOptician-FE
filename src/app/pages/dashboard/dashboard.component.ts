@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 
@@ -9,15 +9,23 @@ import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/rou
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   isMobileMenuOpen = false;
   user = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
+    name: '',
+    email: '',
     avatar: ''
   };
 
   constructor(private router: Router) { }
+
+  ngOnInit(): void {
+    if (typeof localStorage !== 'undefined') {
+      this.user.name = localStorage.getItem('name') || '';
+      this.user.email = localStorage.getItem('email') || '';
+      this.user.avatar = localStorage.getItem('avatar') || '';
+    }
+  }
 
   navItems = [
     { label: 'My Courses', icon: 'book', route: 'my-courses' },
@@ -33,11 +41,14 @@ export class DashboardComponent {
   }
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('_id');
-    localStorage.removeItem('name');
-    localStorage.removeItem('email');
-    localStorage.removeItem('role');
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('_id');
+      localStorage.removeItem('name');
+      localStorage.removeItem('email');
+      localStorage.removeItem('role');
+      localStorage.removeItem('avatar');
+    }
     this.router.navigate(['/auth/login']);
   }
 }
