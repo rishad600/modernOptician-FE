@@ -16,6 +16,22 @@ export const routes: Routes = [
       {
         path: 'course/:id',
         loadComponent: () => import('./pages/course-detail/course-detail.component').then(m => m.CourseDetailComponent)
+      },
+      {
+        path: 'about',
+        loadComponent: () => import('./pages/about/about.component').then(c => c.AboutComponent)
+      },
+      {
+        path: 'courses',
+        loadComponent: () => import('./pages/courses/courses.component').then(m => m.CoursesComponent)
+      },
+      {
+        path: 'blog',
+        loadComponent: () => import('./pages/blog/listing').then(m => m.BlogComponent)
+      },
+      {
+        path: 'blog/:id',
+        loadComponent: () => import('./pages/blog-detail/detail').then(m => m.BlogDetailComponent)
       }
     ]
   },

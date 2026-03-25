@@ -1,0 +1,204 @@
+<div class="about-page">
+  <!-- 1. Hero Section -->
+  <section class="enonix-hero">
+    <div class="enonix-hero__bg-text">ABOUT US</div>
+    <div class="container footer-container">
+      <div class="enonix-hero__content">
+        <h1 class="enonix-hero__title">Empowering the Future of Optical Professionals</h1>
+        <p class="enonix-hero__description">We believe in making quality optometry education accessible to everyone, everywhere.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Intro Section (Staggered Images) -->
+  <section class="intro section">
+    <div class="container intro__grid">
+      <div class="intro__images">
+        <div class="intro__img-wrapper main-img">
+          <img src="images/Hero Image.jpg" alt="Clinical Training">
+        </div>
+        <div class="intro__img-wrapper secondary-img">
+          <img src="images/About-image.png" alt="Student Learning">
+        </div>
+      </div>
+      <div class="intro__content">
+        <span class="section-tag">OUR MISSION</span>
+        <h2 class="section-title">Bridging the Gap Between Theory and Practice</h2>
+        <p class="section-desc">Our platform provides a comprehensive learning experience that combines rigorous academic standards with practical, real-world applications.</p>
+        <ul class="intro__features">
+          <li>
+            <span class="check-icon">✓</span>
+            Peer-reviewed curriculum
+          </li>
+          <li>
+            <span class="check-icon">✓</span>
+            Expert-led video instructions
+          </li>
+          <li>
+            <span class="check-icon">✓</span>
+            Practical hands-on simulations
+          </li>
+          <li>
+            <span class="check-icon">✓</span>
+            Lifetime community access
+          </li>
+        </ul>
+        <button class="btn-primary">GET STARTED <span class="arrow">→</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Values Tabs Section -->
+  <section class="values-tabs section">
+    <div class="container values-tabs__layout">
+      <!-- Left Side: Header, Tabs, and Text Content -->
+      <div class="values-tabs__left">
+        <span class="section-tag">OUR VALUES</span>
+        <h2 class="section-title">Driven by Purpose</h2>
+        
+        <div class="tabs-nav">
+          <button [class.active]="activeTab === 'mission'" (click)="setTab('mission')">Our Mission</button>
+          <button [class.active]="activeTab === 'vision'" (click)="setTab('vision')">Our Vision</button>
+          <button [class.active]="activeTab === 'process'" (click)="setTab('process')">Our Process</button>
+        </div>
+
+        <div class="tab-text-container" [ngSwitch]="activeTab">
+          <!-- Mission Text -->
+          <div class="content-text" *ngSwitchCase="'mission'">
+            <h3>Democratizing Specialized Education</h3>
+            <p>Our mission is to break down the barriers to entry in the optical field by providing high-quality, affordable training modules.</p>
+            <div class="features-mini-grid">
+              <div class="mini-card">
+                <img src="images/Book.svg" alt="Icon">
+                <h4>Accessible</h4>
+                <p>Learn from any device, anywhere.</p>
+              </div>
+              <div class="mini-card">
+                <img src="images/video lesson.svg" alt="Icon">
+                <h4>Affordable</h4>
+                <p>Fraction of traditional school costs.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vision Text -->
+          <div class="content-text" *ngSwitchCase="'vision'">
+            <h3>Setting the Global Standard</h3>
+            <p>We envision a world where every optician has access to the tools they need to provide exceptional eye care.</p>
+            <div class="features-mini-grid">
+              <div class="mini-card">
+                <img src="images/Quizzes.svg" alt="Icon">
+                <h4>Global</h4>
+                <p>Standardized clinical training.</p>
+              </div>
+              <div class="mini-card">
+                <img src="images/video lesson.svg" alt="Icon">
+                <h4>Innovative</h4>
+                <p>Latest tech-integrated learning.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Process Text -->
+          <div class="content-text" *ngSwitchCase="'process'">
+            <h3>How We Ensure Excellence</h3>
+            <p>Our peer-reviewed process ensures that every lesson meets the highest clinical standards of the optometry industry.</p>
+            <div class="features-mini-grid">
+              <div class="mini-card">
+                <img src="images/Book.svg" alt="Icon">
+                <h4>Review</h4>
+                <p>Expert-vetted content.</p>
+              </div>
+              <div class="mini-card">
+                <img src="images/Quizzes.svg" alt="Icon">
+                <h4>Test</h4>
+                <p>Rigorous skill assessments.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side: Image Content -->
+      <div class="values-tabs__right">
+        <div class="content-image">
+          <img src="/images/About-image.png" alt="About Optician Classes">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Stats & Timeline Section -->
+  <section class="stats-timeline section">
+    <div class="container stats-timeline__grid">
+      <div class="stats-col">
+        <div class="stat-item" *ngFor="let stat of stats">
+          <span class="stat-value">{{ stat.value }}</span>
+          <span class="stat-label">{{ stat.label }}</span>
+        </div>
+      </div>
+      <div class="timeline-col">
+        <div class="timeline-item" *ngFor="let milestone of milestones">
+          <div class="milestone-year">{{ milestone.year }}</div>
+          <div class="milestone-content">
+            <h4>{{ milestone.title }}</h4>
+            <p>{{ milestone.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Team Section (4-Column) -->
+  <section class="team-grid section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">OUR TEAM</span>
+        <h2 class="section-title">Meet Our Experts</h2>
+      </div>
+      <div class="team-grid__layout">
+        <div class="team-member-card" *ngFor="let member of team">
+          <div class="member-img">
+            <img [src]="member.image" [alt]="member.name">
+            <div class="social-links">
+              <!-- Mock Icons -->
+              <span>Ln</span><span>Tw</span><span>Fb</span>
+            </div>
+          </div>
+          <div class="member-info">
+            <h4>{{ member.name }}</h4>
+            <p>{{ member.role }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Benefits (Minimalist 3-Column) -->
+  <section class="benefits-grid section">
+    <div class="container">
+      <div class="benefits-grid__layout">
+        <div class="benefit-card" *ngFor="let benefit of benefits">
+          <div class="benefit-icon">
+            <img [src]="benefit.icon" [alt]="benefit.title">
+          </div>
+          <h4>{{ benefit.title }}</h4>
+          <p>{{ benefit.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. CTA -->
+  <section class="final-cta section">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Start Your Professional Journey Today</h2>
+        <div class="cta-btns">
+          <button class="btn-primary" routerLink="/courses">EXPLORE ALL COURSES</button>
+          <button class="btn-outline">CONTACT SUPPORT</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

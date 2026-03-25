@@ -1,0 +1,616 @@
+@import '../../../styles/tokens/breakpoints';
+
+.about-page {
+  background-color: var(--bg-surface);
+  overflow-x: hidden;
+
+  .section {
+    padding: 100px 0;
+    
+    @include mobile {
+      padding: var(--space-12) 0;
+    }
+  }
+}
+
+// Global Section Helpers
+.section-tag {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+
+  @include mobile {
+    display: block;
+    text-align: center;
+  }
+}
+
+.section-title {
+  font-size: 3rem;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+
+  @include mobile {
+    font-size: 2.25rem;
+    text-align: center;
+  }
+}
+
+.section-desc {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+
+  @include mobile {
+    text-align: center;
+  }
+}
+
+// 1. Enonix Hero
+.enonix-hero {
+  position: relative;
+  height: 60vh;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('/images/Hero Image.jpg');
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  color: var(--text-primary);
+  position: relative;
+  padding-top: 80px;
+
+  @include mobile {
+    height: auto;
+    min-height: 400px;
+    padding: var(--space-24) 0 var(--space-12);
+  }
+
+  &__bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 15rem;
+    font-weight: 900;
+    opacity: 0.05;
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+    -webkit-text-stroke: 2px var(--color-primary);
+    color: transparent;
+
+    @include tablet { font-size: 8rem; }
+    @include mobile { font-size: 5rem; }
+  }
+
+  &__content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    font-size: 4.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+
+    @include tablet { font-size: 3.5rem; }
+    @include mobile { font-size: 2.25rem; }
+  }
+
+  &__description {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    @include mobile { font-size: 1.1rem; }
+  }
+}
+
+// 2. Intro Section (Staggered Images)
+.intro {
+  padding: 100px 0;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 5rem;
+    align-items: center;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+    
+    @include mobile {
+      gap: 2rem;
+    }
+  }
+
+  &__images {
+    position: relative;
+    height: 500px;
+
+    .intro__img-wrapper {
+      position: absolute;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+
+      img { width: 100%; height: 100%; object-fit: cover; }
+    }
+
+    .main-img {
+      width: 70%;
+      height: 80%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .secondary-img {
+      width: 60%;
+      height: 60%;
+      bottom: 0;
+      right: 0;
+      z-index: 2;
+      border: 8px solid white;
+    }
+
+    @include mobile {
+      height: 300px;
+    }
+  }
+
+  &__features {
+    list-style: none;
+    margin-bottom: 2.5rem;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+
+      .check-icon {
+        width: 24px;
+        height: 24px;
+        background: var(--color-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  &__content {
+    @include mobile {
+      text-align: center;
+      .intro__features li {
+        justify-content: center;
+      }
+      .btn-primary {
+        margin: 0 auto;
+      }
+    }
+  }
+
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 2.5rem;
+    border-radius: 100px;
+    
+    .arrow { transition: transform 0.3s ease; }
+    &:hover .arrow { transform: translateX(5px); }
+  }
+}
+
+// 3. Values Tabs Section
+.values-tabs {
+  background: #f8faff;
+  padding: 100px 0;
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: flex-start;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    @include mobile {
+      gap: 2rem;
+    }
+  }
+
+  .tabs-nav {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: flex-start;
+    margin: 2rem 0 3rem;
+    border-bottom: 2px solid rgba(0,0,0,0.05);
+    @include mobile {
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    button {
+      padding: 1rem 0.5rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      position: relative;
+      transition: all 0.3s ease;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--color-primary);
+        transition: all 0.3s ease;
+      }
+
+      &.active {
+        color: var(--color-primary);
+        &::after { width: 100%; }
+      }
+    }
+  }
+
+  .tab-text-container {
+    text-align: left;
+    @include mobile { text-align: center; }
+
+    h3 { font-size: 2.25rem; margin-bottom: 1.5rem; font-weight: 600; color: var(--text-primary); }
+    p { font-size: 1.125rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 2.5rem; }
+
+    .features-mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+
+      @include mobile {
+        grid-template-columns: 1fr;
+      }
+
+      .mini-card {
+        padding: 2rem;
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+
+        img { width: 32px; height: 32px; margin-bottom: 1rem; }
+        h4 { margin-bottom: 0.5rem; color: var(--text-primary); }
+        p { font-size: 0.875rem; margin-bottom: 0; }
+      }
+    }
+  }
+
+  .content-image {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    height: 600px;
+    box-shadow: var(--shadow-xl);
+    
+    img { width: 100%; height: 100%; object-fit: cover; }
+
+    @media (max-width: 1024px) {
+      height: 450px;
+    }
+
+    @include mobile {
+      height: 300px;
+    }
+  }
+}
+
+// 4. Stats & Timeline Section
+.stats-timeline {
+  padding: 100px 0;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: 4rem;
+    }
+
+    @include mobile {
+      gap: 3rem;
+    }
+  }
+
+  .stats-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .stat-item {
+      .stat-value {
+        display: block;
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: var(--color-primary);
+        margin-bottom: 0.5rem;
+      }
+      .stat-label {
+        font-weight: 700;
+        color: var(--text-primary);
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.05em;
+      }
+    }
+  }
+
+  .timeline-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+
+    .timeline-item {
+      display: flex;
+      gap: 2rem;
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 25px;
+        top: 60px;
+        bottom: -40px;
+        width: 1px;
+        background: rgba(0,0,0,0.1);
+      }
+
+      &:last-child::before { display: none; }
+
+      .milestone-year {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border: 2px solid var(--color-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.875rem;
+        flex-shrink: 0;
+        z-index: 2;
+      }
+
+      @include mobile {
+        gap: 1.5rem;
+        &::before { left: 20px; }
+        .milestone-year { width: 40px; height: 40px; font-size: 0.75rem; }
+      }
+
+      h4 { font-size: 1.5rem; margin-bottom: 0.75rem; font-weight: 600; }
+      p { color: var(--text-secondary); line-height: 1.6; }
+    }
+  }
+}
+
+// 5. Team Grid (4-Column)
+.team-grid {
+  background: #fdfdfd;
+  padding: 100px 0;
+
+  &__layout {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include mobile { 
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  .team-member-card {
+    .member-img {
+      position: relative;
+      height: 350px;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+
+      @include mobile {
+        height: 300px;
+      }
+
+      img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+
+      .social-links {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 100px;
+        display: flex;
+        gap: 1rem;
+        opacity: 0;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-lg);
+
+        span { font-weight: 700; color: var(--color-primary); font-size: 0.75rem; cursor: pointer; }
+      }
+    }
+
+    .member-info {
+      h4 { font-size: 1.25rem; margin-bottom: 0.25rem; font-weight: 600; }
+      p { color: var(--color-primary); font-weight: 600; font-size: 0.875rem; }
+
+      @include mobile {
+        text-align: center;
+      }
+    }
+
+    &:hover {
+      .member-img img { transform: scale(1.05); }
+      .social-links { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+  }
+}
+
+// 6. Benefits (Minimalist 3-Column)
+.benefits-grid {
+  padding: 100px 0;
+
+  &__layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4rem;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    @include mobile {
+      gap: 2rem;
+    }
+  }
+
+  .benefit-card {
+    .benefit-icon {
+      width: 60px;
+      height: 60px;
+      background: white;
+      box-shadow: 0 10px 30px rgba(87, 131, 236, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+
+      @include mobile {
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 1.5rem;
+      }
+
+      img { width: 24px; height: 24px; }
+    }
+
+    h4 { font-size: 1.5rem; margin-bottom: 1rem; font-weight: 600; }
+    p { color: var(--text-secondary); line-height: 1.6; }
+
+    @include mobile {
+      text-align: center;
+    }
+  }
+}
+
+// 7. Final CTA
+.final-cta {
+  padding-bottom: 150px;
+
+  .cta-box {
+    background: var(--color-primary);
+    border-radius: 40px;
+    padding: 6rem 4rem;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+
+    @include mobile {
+      padding: 4rem 1.5rem;
+      border-radius: 24px;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+    }
+
+    h2 { 
+      font-size: 3.5rem; 
+      font-weight: 600; 
+      margin-bottom: 3rem; 
+      max-width: 800px; 
+      margin-left: auto; 
+      margin-right: auto; 
+      line-height: 1.1; 
+      
+      @media (max-width: 1024px) {
+        font-size: 2.75rem;
+      }
+
+      @include mobile {
+        font-size: 2.25rem;
+        margin-bottom: 2rem;
+      }
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+
+      @include mobile { flex-direction: column; }
+
+      .btn-primary {
+        background: white;
+        color: var(--color-primary);
+        padding: 1.25rem 2.5rem;
+        border-radius: 100px;
+        font-weight: 700;
+        &:hover { background: #f8f9fa; }
+      }
+
+      .btn-outline {
+        border: 2px solid white;
+        color: white;
+        padding: 1.25rem 2.5rem;
+        border-radius: 100px;
+        font-weight: 700;
+        &:hover { background: rgba(255,255,255,0.1); }
+      }
+    }
+  }
+}

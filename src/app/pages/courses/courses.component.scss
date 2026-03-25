@@ -1,0 +1,206 @@
+@use 'styles/tokens/breakpoints' as bp;
+
+.courses-page {
+  padding-top: 100px;
+  background-color: var(--bg-surface);
+  min-height: 100vh;
+
+  @include bp.mobile {
+    padding-top: 80px;
+  }
+}
+
+.filter-section {
+  padding: 30px 0;
+  background-color: var(--bg-surface);
+  z-index: 10;
+
+  @include bp.mobile {
+    top: 80px;
+    padding: 20px 0;
+  }
+}
+
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem 1.5rem;
+  background-color: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl, 1rem);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+  @include bp.tablet {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+    padding: 1.25rem;
+  }
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+
+  @include bp.tablet {
+    max-width: none;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    opacity: 0.5;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.875rem 1rem 0.875rem 3.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: var(--bg-surface, #f9fafb);
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-blue);
+      box-shadow: 0 0 0 4px rgba(87, 131, 236, 0.1);
+      background-color: white;
+    }
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--text-muted);
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 2.1rem;
+    top: 60%;
+    width: 6px;
+    height: 2px;
+    background-color: var(--text-muted);
+    transform: rotate(45deg);
+    z-index: 1;
+  }
+}
+
+.sort-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--bg-surface, #f9fafb);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
+
+  &:focus-within {
+    border-color: var(--color-blue);
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(87, 131, 236, 0.1);
+  }
+
+  .sort-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .sort-select {
+    border: none;
+    background: transparent;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding-right: 1.5rem;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 1rem;
+
+    option {
+      background-color: white;
+      color: var(--text-primary);
+    }
+  }
+}
+
+.category-filters {
+  display: none; // Hidden as requested
+}
+
+.listing-section {
+  padding: 20px 0 100px;
+
+  .results-info {
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+
+  @include bp.tablet {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  @include bp.mobile {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.no-results {
+  padding: 100px 0;
+  text-align: center;
+
+  &__content {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  &__img {
+    width: 120px;
+    margin-bottom: 2rem;
+    opacity: 0.5;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+}
