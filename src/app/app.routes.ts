@@ -1,3 +1,4 @@
+// Admin and Auth routes configuration
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './shared/layout/main-layout.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -54,12 +55,51 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    loadComponent: () => import('./pages/admin/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
     children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
       {
         path: 'dashboard',
         loadComponent: () => import('./pages/admin/dashboard/admin-dashboard/admin-dashboard').then(m => m.AdminDashboardComponent)
+      },
+      {
+        path: 'courses',
+        loadComponent: () => import('./pages/admin/courses/admin-courses.component').then(m => m.AdminCoursesComponent)
+      },
+      {
+        path: 'courses/new',
+        loadComponent: () => import('./pages/admin/courses/edit/admin-course-edit.component').then(m => m.AdminCourseEditComponent)
+      },
+      {
+        path: 'courses/edit/:id',
+        loadComponent: () => import('./pages/admin/courses/edit/admin-course-edit.component').then(m => m.AdminCourseEditComponent)
+      },
+      {
+        path: 'students',
+        loadComponent: () => import('./pages/admin/students/admin-students.component').then(m => m.AdminStudentsComponent)
+      },
+      {
+        path: 'payments',
+        loadComponent: () => import('./pages/admin/payments/admin-payments.component').then(m => m.AdminPaymentsComponent)
+      },
+      {
+        path: 'content',
+        loadComponent: () => import('./pages/admin/content/admin-content.component').then(m => m.AdminContentComponent)
+      },
+      {
+        path: 'content/new',
+        loadComponent: () => import('./pages/admin/content/edit/admin-content-edit.component').then(m => m.AdminContentEditComponent)
+      },
+      {
+        path: 'content/edit/:id',
+        loadComponent: () => import('./pages/admin/content/edit/admin-content-edit.component').then(m => m.AdminContentEditComponent)
       }
     ]
+
   },
   {
     path: 'auth',

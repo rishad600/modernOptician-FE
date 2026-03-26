@@ -1,5 +1,5 @@
 <!-- Hero Section -->
-<section class="hero section">
+<section #heroSection class="hero section">
   <div class="container">
     <div class="hero__layout">
       <div class="hero__content">
@@ -30,7 +30,7 @@
           <img src="images/Hero Image.jpg" alt="Optician Learning" class="hero__img">
           <!-- Play Button Overlay -->
           <div class="hero__play-overlay">
-            <button class="hero__play-btn">
+            <button class="hero__play-btn" (click)="openVideoModal()">
               <img src="images/Play.svg" alt="Play" class="hero__play-icon">
             </button>
           </div>
@@ -159,3 +159,15 @@
     </div>
   </div>
 </section>
+
+<!-- Video Modal -->
+<div class="video-modal" *ngIf="showVideoModal" (click)="closeVideoModal()">
+  <div class="video-modal__content" (click)="$event.stopPropagation()">
+    <button class="video-modal__close" (click)="closeVideoModal()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="video-modal__wrapper">
+      <video #videoPlayer [src]="videoUrl" controls playsinline class="video-modal__video"></video>
+    </div>
+  </div>
+</div>

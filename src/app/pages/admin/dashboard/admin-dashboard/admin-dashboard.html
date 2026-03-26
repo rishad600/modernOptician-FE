@@ -1,59 +1,4 @@
-<div class="dashboard">
-  <!-- Mobile Header -->
-  <header class="dashboard__mobile-header">
-    <div class="dashboard__mobile-user">
-      <div class="avatar-placeholder small">A</div>
-      <span>{{ adminName }}</span>
-    </div>
-    <button class="dashboard__mobile-toggle" (click)="isMobileMenuOpen = !isMobileMenuOpen" [class.is-open]="isMobileMenuOpen">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  </header>
-
-  <!-- Mobile Nav Overlay -->
-  <nav class="dashboard__mobile-nav" [class.is-open]="isMobileMenuOpen">
-    <a *ngFor="let item of navItems" 
-       [routerLink]="item.route" 
-       routerLinkActive="is-active"
-       (click)="isMobileMenuOpen = false"
-       class="dashboard__mobile-nav-item">
-      <span>{{ item.label }}</span>
-    </a>
-    <a routerLink="/auth/login" class="dashboard__mobile-nav-item logout">Logout</a>
-  </nav>
-
-  <!-- Sidebar -->
-  <aside class="dashboard__sidebar">
-    <div class="dashboard__user">
-      <div class="dashboard__avatar">
-        <div class="avatar-placeholder">A</div>
-      </div>
-      <div class="dashboard__user-info">
-        <h3>{{ adminName }}</h3>
-        <p>{{ adminEmail }}</p>
-      </div>
-    </div>
-
-    <nav class="dashboard__nav">
-      <a *ngFor="let item of navItems" 
-         [routerLink]="item.route" 
-         routerLinkActive="is-active"
-         class="dashboard__nav-item">
-        <i class="icon-{{item.icon}}"></i>
-        <span>{{ item.label }}</span>
-      </a>
-      <a routerLink="/auth/login" class="dashboard__nav-item logout">
-        <i class="icon-logout"></i>
-        <span>Logout</span>
-      </a>
-    </nav>
-  </aside>
-
-  <!-- Main Content Area -->
-  <main class="dashboard__content">
-    <section class="admin-header">
+<section class="admin-header">
       <div class="admin-header__content">
         <h1 class="admin-header__title">Overview</h1>
       </div>
@@ -188,5 +133,4 @@
       </section>
     </div>
 
-  </main>
-</div>
+

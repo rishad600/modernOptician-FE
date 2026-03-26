@@ -1,0 +1,82 @@
+<div class="admin-payments">
+  <header class="admin-header">
+    <div class="admin-header__content">
+      <h1 class="admin-header__title">Payments & Transactions</h1>
+      <p class="admin-header__subtitle">Monitor and manage all course enrollment fees</p>
+    </div>
+    <div class="admin-header__actions">
+      <button class="btn-outline">Download CSV</button>
+    </div>
+  </header>
+
+  <div class="payments-stats">
+    <div class="stat-card">
+      <span class="stat-card__label">Total Revenue</span>
+      <span class="stat-card__value">₹44,497</span>
+      <span class="stat-card__trend positive">+12.5% vs last month</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__label">Succesful Payments</span>
+      <span class="stat-card__value">142</span>
+      <span class="stat-card__trend positive">+8%</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__label">Pending Issues</span>
+      <span class="stat-card__value">3</span>
+      <span class="stat-card__trend negative">+2 new today</span>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <div class="table-header">
+      <div class="search-box">
+        <i class="icon-search"></i>
+        <input type="text" placeholder="Search by student or TXN ID...">
+      </div>
+      <div class="filters">
+        <select>
+          <option>All Status</option>
+          <option>Success</option>
+          <option>Pending</option>
+          <option>Failed</option>
+        </select>
+      </div>
+    </div>
+
+    <table class="payments-table">
+      <thead>
+        <tr>
+          <th>Transaction ID</th>
+          <th>Student</th>
+          <th>Course</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let txn of transactions">
+          <td class="txn-id">{{ txn.id }}</td>
+          <td class="student-info">
+            <span class="name">{{ txn.student }}</span>
+            <span class="method">{{ txn.method }}</span>
+          </td>
+          <td class="course-name">{{ txn.course }}</td>
+          <td class="amount">{{ txn.amount }}</td>
+          <td class="date">{{ txn.date }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(txn.status)">
+              {{ txn.status }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-icon" (click)="viewReceipt(txn.id)" title="View Receipt">
+              <i class="icon-receipt"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
