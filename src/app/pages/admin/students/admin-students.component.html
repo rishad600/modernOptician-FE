@@ -1,0 +1,91 @@
+<div class="admin-students">
+  <header class="admin-header">
+    <div class="admin-header__content">
+      <h1 class="admin-header__title">Student Management</h1>
+      <p class="admin-header__subtitle">Manage and monitor student enrollments and progress</p>
+    </div>
+    <div class="admin-header__actions">
+      <button class="btn-primary">Add New Student</button>
+    </div>
+  </header>
+
+  <div class="students-stats">
+    <div class="stat-card">
+      <span class="stat-card__label">Total Students</span>
+      <span class="stat-card__value">1,284</span>
+      <span class="stat-card__trend positive">+42 this week</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__label">Active Now</span>
+      <span class="stat-card__value">86</span>
+      <span class="stat-card__trend positive">+12%</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__label">Completions</span>
+      <span class="stat-card__value">412</span>
+      <span class="stat-card__trend positive">+24%</span>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <div class="table-header">
+      <div class="search-box">
+        <i class="icon-search"></i>
+        <input type="text" placeholder="Search by name, email or ID...">
+      </div>
+      <div class="filters">
+        <select>
+          <option>All Status</option>
+          <option>Active</option>
+          <option>Inactive</option>
+        </select>
+      </div>
+    </div>
+
+    <table class="students-table">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>ID</th>
+          <th>Joined</th>
+          <th>Courses</th>
+          <th>Total Spent</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let stu of students">
+          <td class="student-cell">
+            <div class="student-profile">
+              <div class="avatar-sm">{{ stu.avatar }}</div>
+              <div class="info">
+                <span class="name">{{ stu.name }}</span>
+                <span class="email">{{ stu.email }}</span>
+              </div>
+            </div>
+          </td>
+          <td class="stu-id">{{ stu.id }}</td>
+          <td class="date">{{ stu.joined }}</td>
+          <td class="courses-count">{{ stu.courses }}</td>
+          <td class="spent-amount">{{ stu.spent }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(stu.status)">
+              {{ stu.status }}
+            </span>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="btn-icon" (click)="viewDetails(stu.id)" title="View Details">
+                <i class="icon-eye"></i>
+              </button>
+              <button class="btn-icon delete" title="Suspend Student">
+                <i class="icon-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

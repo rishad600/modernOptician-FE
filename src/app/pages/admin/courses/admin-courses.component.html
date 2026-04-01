@@ -1,0 +1,73 @@
+<div class="admin-courses">
+  <header class="admin-header">
+    <div class="admin-header__content">
+      <h1 class="admin-header__title">Manage Courses</h1>
+      <p class="admin-header__subtitle">Review and manage all your educational content</p>
+    </div>
+    <div class="admin-header__actions">
+      <a routerLink="/admin/courses/new" class="btn-primary">Add New Course</a>
+    </div>
+  </header>
+
+
+
+  <!-- Courses List -->
+  <section class="courses-list">
+    <div class="list-header">
+      <h2 class="section-title">All Courses</h2>
+      <div class="list-actions">
+        <div class="search-box">
+          <input type="text" placeholder="Search courses...">
+        </div>
+      </div>
+    </div>
+
+    <div class="courses-grid">
+      <div *ngFor="let course of courses" class="course-manage-card">
+        <div class="course-manage-card__image">
+          <img [src]="course.image" [alt]="course.title">
+          <span class="status-badge" [ngClass]="course.status.toLowerCase()">{{ course.status }}</span>
+        </div>
+        
+        <div class="course-manage-card__content">
+          <div class="course-manage-card__main">
+            <h3 class="course-title">{{ course.title }}</h3>
+            <p class="instructor">By {{ course.instructor }}</p>
+            
+            <div class="course-meta">
+              <span><i class="icon-clock"></i> {{ course.duration }}</span>
+              <span><i class="icon-book"></i> {{ course.lessons }} Lessons</span>
+            </div>
+
+            <div class="course-stats-preview">
+              <div class="stat-item">
+                <span class="label">Students</span>
+                <span class="value">{{ course.students }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">Rating</span>
+                <span class="value">★ {{ course.rating }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">Price</span>
+                <span class="value">{{ course.price }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="course-manage-card__actions">
+            <a class="btn-icon edit" title="Edit Course" [routerLink]="['/admin/courses/edit', course.id]">
+              <i class="icon-edit"></i>
+            </a>
+            <a class="btn-icon view" title="View Details" [routerLink]="['/course', course.id]">
+              <i class="icon-eye"></i>
+            </a>
+            <button class="btn-icon delete" title="Delete Course" (click)="deleteCourse(course.id)">
+              <i class="icon-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

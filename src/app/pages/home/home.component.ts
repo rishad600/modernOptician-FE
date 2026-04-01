@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TestimonialsComponent } from './sections/testimonials/testimonials.component';
 import { CourseCardComponent } from '../../shared/components/course-card/course-card.component';
@@ -14,7 +14,61 @@ import { CourseCardComponent } from '../../shared/components/course-card/course-
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
+  @ViewChild('heroSection') heroSection!: ElementRef<HTMLElement>;
+  
+  showVideoModal = false;
+  videoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4'; // Placeholder premium-looking video
+  private observer: IntersectionObserver | null = null;
+
+  openVideoModal() {
+    this.showVideoModal = true;
+    setTimeout(() => {
+      if (this.videoPlayer) {
+        this.videoPlayer.nativeElement.play();
+      }
+    }, 100);
+  }
+
+  closeVideoModal() {
+    if (this.videoPlayer) {
+      this.videoPlayer.nativeElement.pause();
+    }
+    this.showVideoModal = false;
+  }
+
+  private setupIntersectionObserver() {
+    this.cleanupObserver();
+    
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting && this.showVideoModal && this.videoPlayer) {
+          this.videoPlayer.nativeElement.pause();
+        }
+      });
+    }, { threshold: 0 }); // Trigger as soon as it leaves the viewport
+
+    if (this.heroSection) {
+      this.observer.observe(this.heroSection.nativeElement);
+    }
+  }
+
+  private cleanupObserver() {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+  }
+
+  ngAfterViewInit() {
+    this.setupIntersectionObserver();
+  }
+
+  ngOnDestroy() {
+    this.cleanupObserver();
+  }
+
   plans = [
     {
       id: 'basic-optics',

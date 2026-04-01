@@ -1,0 +1,86 @@
+<div class="admin-content">
+  <header class="admin-header">
+    <div class="admin-header__content">
+      <h1 class="admin-header__title">Blog & Articles</h1>
+      <p class="admin-header__subtitle">Create and manage your educational content</p>
+    </div>
+    <div class="admin-header__actions">
+      <button class="btn-primary" routerLink="/admin/content/new">Create New Article</button>
+    </div>
+  </header>
+
+  <div class="table-container">
+    <div class="table-header">
+      <div class="search-box">
+        <i class="icon-search"></i>
+        <input type="text" placeholder="Search articles by title or author...">
+      </div>
+      <div class="filters">
+        <select>
+          <option>All Categories</option>
+          <option>Health</option>
+          <option>Technology</option>
+          <option>Business</option>
+        </select>
+        <select>
+          <option>All Status</option>
+          <option>Published</option>
+          <option>Draft</option>
+        </select>
+      </div>
+    </div>
+
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>Article Title</th>
+          <th>Type</th>
+          <th>Author</th>
+
+          <th>Date</th>
+          <th>Tags</th>
+          <th>Views</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let art of articles">
+          <td class="title-cell">
+            <span class="article-title">{{ art.title }}</span>
+          </td>
+          <td>
+            <span class="type-badge" [ngClass]="art.type.toLowerCase()">{{ art.type }}</span>
+          </td>
+          <td>{{ art.author }}</td>
+
+          <td class="date">{{ art.date }}</td>
+          <td>
+            <div class="tags-list">
+              <span class="tag-chip" *ngFor="let tag of art.tags">{{ tag }}</span>
+            </div>
+          </td>
+          <td class="views">{{ art.views }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(art.status)">
+              {{ art.status }}
+            </span>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="btn-icon" [routerLink]="['/admin/content/edit', art.id]" title="Edit">
+                <i class="icon-edit"></i>
+              </button>
+              <button class="btn-icon" [routerLink]="['/blog', art.id]" title="View Live">
+                <i class="icon-eye"></i>
+              </button>
+              <button class="btn-icon delete" (click)="deleteArticle(art.id)" title="Delete">
+                <i class="icon-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,108 @@
+<div class="edit-content">
+  <nav class="breadcrumb">
+    <a routerLink="/admin/dashboard">Admin</a> /
+    <a routerLink="/admin/content">Content Management</a> /
+    <span class="current">{{ isEditMode ? 'Edit' : 'Create' }} Article</span>
+  </nav>
+
+  <header class="admin-header">
+    <h1 class="admin-header__title">{{ isEditMode ? 'Edit Article' : 'Create New Article' }}</h1>
+  </header>
+
+  <form [formGroup]="contentForm" (ngSubmit)="onSubmit()" class="form-container">
+    <div class="form-grid">
+      <!-- Main Content Area -->
+      <div class="form-main">
+        <div class="form-section">
+          <div class="form-group">
+            <label>Content Type</label>
+            <select formControlName="contentType">
+              <option value="Blog">Blog Post</option>
+              <option value="Article">Educational Article</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+
+            <label>Article Title</label>
+            <input type="text" formControlName="title" placeholder="Enter article title...">
+            <div class="error" *ngIf="contentForm.get('title')?.touched && contentForm.get('title')?.invalid">
+              Title is required (min 5 chars).
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Article Excerpt (Summarized view)</label>
+            <textarea formControlName="excerpt" rows="3" placeholder="Enter a brief summary for the listing page..."></textarea>
+            <div class="error" *ngIf="contentForm.get('excerpt')?.touched && contentForm.get('excerpt')?.invalid">
+              Excerpt is required (max 200 chars).
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Article Content (HTML supported)</label>
+            <textarea formControlName="content" rows="15" placeholder="Write your article content here..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-section author-section">
+          <h2 class="section-title">Author Information</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Author Name</label>
+              <input type="text" formControlName="author">
+            </div>
+            <div class="form-group">
+              <label>Publish Date</label>
+              <input type="date" formControlName="date">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>About the Author</label>
+            <textarea formControlName="authorBio" rows="4"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Area -->
+      <div class="form-aside">
+        <div class="form-section status-section">
+          <h2 class="section-title">Publishing</h2>
+          <div class="form-group">
+            <label>Status</label>
+            <select formControlName="status">
+              <option value="Draft">Draft</option>
+              <option value="Published">Published</option>
+            </select>
+          </div>
+          <div class="form-actions-stack">
+            <button type="submit" class="btn-primary full">Save Article</button>
+            <button type="button" class="btn-outline full" routerLink="/admin/content">Cancel</button>
+          </div>
+        </div>
+
+        <div class="form-section media-section">
+          <h2 class="section-title">Featured Image</h2>
+          <div class="image-preview-container">
+            <img [src]="imagePreview || contentForm.get('image')?.value" alt="Preview" *ngIf="imagePreview || contentForm.get('image')?.value">
+            <div class="empty-preview" *ngIf="!imagePreview && !contentForm.get('image')?.value">
+              <span>No image selected</span>
+            </div>
+            <div class="overlay">
+              <button type="button" class="btn-secondary small" (click)="imgInput.click()">Change Image</button>
+              <input #imgInput type="file" (change)="onImageSelected($event)" style="display: none" accept="image/*">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section meta-section">
+          <h2 class="section-title">Categorization</h2>
+          <div class="form-group">
+            <label>Tags (comma separated)</label>
+            <input type="text" formControlName="tags" placeholder="Health, Technology, etc.">
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
