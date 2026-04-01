@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -9,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   user = {
     firstName: 'John',
     lastName: 'Doe',
@@ -22,6 +24,49 @@ export class ProfileComponent {
     newPassword: '',
     confirmPassword: ''
   };
+
+  passwordError: string | null = null;
+  passwordSuccess: string | null = null;
+  profileError: string | null = null;
+  profileSuccess: string | null = null;
+
+  private apiUrl = environment.apiUrl;
+
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.loadProfile();
+  }
+
+  loadProfile() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.http.get(`${this.apiUrl}/web/user/profile`, { headers }).subscribe({
+      next: (response: any) => {
+        // Assume response structure maps 'name' to 'firstName'
+        const profile = response.data || response;
+        if (profile) {
+          this.user.firstName = profile.name || profile.firstName || '';
+          this.user.lastName = profile.lastName || '';
+          this.user.email = profile.email || '';
+          this.user.phone = profile.phone || '';
+          // Avatar or bio can be mapped here later if needed
+        }
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Failed to load profile:', error);
+      }
+    });
+  }
 
   faqs = [
     {
@@ -58,7 +103,80 @@ export class ProfileComponent {
   }
 
   saveProfile() {
-    console.log('Saving profile...', this.user);
-    // TODO: Implement actual save logic
+    this.profileError = null;
+    this.profileSuccess = null;
+
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    const body = {
+      name: this.user.firstName,
+      lastName: this.user.lastName,
+      phone: this.user.phone
+    };
+
+    this.http.put(`${this.apiUrl}/web/user/profile`, body, { headers }).subscribe({
+      next: (response: any) => {
+        this.profileSuccess = response.message || 'Profile updated successfully!';
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Profile update error:', error);
+        this.profileError = error.error?.message || 'Failed to update profile. Please try again.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  changePassword() {
+    this.passwordError = null;
+    this.passwordSuccess = null;
+
+    if (!this.user.oldPassword || !this.user.newPassword || !this.user.confirmPassword) {
+      this.passwordError = 'Please fill in all password fields.';
+      return;
+    }
+
+    if (this.user.newPassword !== this.user.confirmPassword) {
+      this.passwordError = 'New passwords do not match!';
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    const body = {
+      currentPassword: this.user.oldPassword,
+      newPassword: this.user.newPassword
+    };
+
+    this.http.put(`${this.apiUrl}/web/user/profile/change-password`, body, { headers }).subscribe({
+      next: (response: any) => {
+        this.passwordSuccess = 'Password changed successfully!';
+        this.user.oldPassword = '';
+        this.user.newPassword = '';
+        this.user.confirmPassword = '';
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Password change error:', error);
+        
+        // Extract the error message from the JSON body if it exists
+        const apiErrorMsg = error.error?.message;
+        
+        if (error.status === 400) {
+          this.passwordError = apiErrorMsg || 'The current password you entered is incorrect. Please try again.';
+        } else {
+          this.passwordError = apiErrorMsg || 'Failed to change password. Please try again.';
+        }
+        this.cdr.detectChanges();
+      }
+    });
   }
 }
