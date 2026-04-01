@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-layout',
@@ -21,4 +21,11 @@ export class AdminLayoutComponent {
     { label: 'View Payments', route: '/admin/payments', icon: 'payments' },
     { label: 'Content Mgmt', route: '/admin/content', icon: 'content' },
   ];
+
+  constructor(private router: Router) {}
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/auth/admin-login']);
+  }
 }

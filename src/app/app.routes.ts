@@ -58,6 +58,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    canActivate: [adminAuthGuard],
     loadComponent: () => import('./pages/admin/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
     children: [
       {
@@ -108,11 +109,11 @@ export const routes: Routes = [
     path: 'auth',
     loadComponent: () => import('./pages/auth/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
     children: [
-      // {
-      //   path: '',
-      //   redirectTo: 'dashboard',
-      //   pathMatch: 'full'
-      // },
+      {
+        path: '',
+        redirectTo: 'login',
+        pathMatch: 'full'
+      },
       {
         path: 'login',
         loadComponent: () => import('./pages/auth/login/login.component').then(m => m.LoginComponent)

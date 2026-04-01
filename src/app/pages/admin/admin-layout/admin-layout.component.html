@@ -21,7 +21,7 @@
        class="dashboard__mobile-nav-item">
       <span>{{ item.label }}</span>
     </a>
-    <a routerLink="/auth/login" class="dashboard__mobile-nav-item logout">Logout</a>
+    <a (click)="logout()" class="dashboard__mobile-nav-item logout" style="cursor: pointer;">Logout</a>
   </nav>
 
   <!-- Sidebar -->
@@ -44,7 +44,7 @@
         <i class="icon-{{item.icon}}"></i>
         <span>{{ item.label }}</span>
       </a>
-      <a routerLink="/auth/login" class="dashboard__nav-item logout">
+      <a (click)="logout()" class="dashboard__nav-item logout" style="cursor: pointer;">
         <i class="icon-logout"></i>
         <span>Logout</span>
       </a>
