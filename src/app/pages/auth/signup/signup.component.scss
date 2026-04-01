@@ -19,6 +19,28 @@
     font-size: var(--font-size-sm);
     color: var(--text-muted);
   }
+
+  &__alert {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: 8px;
+    margin-bottom: var(--space-6);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+
+    &--error {
+      background-color: #fef2f2;
+      border: 1px solid #f8d7da;
+      color: #991b1b;
+
+      svg {
+        color: #ef4444;
+        flex-shrink: 0;
+      }
+    }
+  }
 }
 
 .auth-form {
