@@ -1,15 +1,27 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.scss',
 })
 export class AdminDashboardComponent {
+  // adminName = 'Admin';
+  // adminEmail = 'admin@modernoptician.com';
+  // isMobileMenuOpen = false;
+
+  // navItems = [
+  //   { label: 'Dashboard', route: '/admin/dashboard', icon: 'dashboard' },
+  //   { label: 'Manage Courses', route: '/admin/courses', icon: 'courses' },
+  //   { label: 'Manage Students', route: '/admin/students', icon: 'students' },
+  //   { label: 'View Payments', route: '/admin/payments', icon: 'payments' },
+  //   { label: 'Content Mgmt', route: '/admin/content', icon: 'content' },
+  // ];
+
   revenueData = [
     { month: 'Jan', amount: 45000 },
     { month: 'Feb', amount: 52000 },
