@@ -17,7 +17,7 @@
           <div class="form-group">
             <label>Content Type</label>
             <select formControlName="contentType">
-              <option value="Blog">Blog Post</option>
+              <option value="Blog Post">Blog Post</option>
               <option value="Article">Educational Article</option>
             </select>
           </div>
@@ -76,7 +76,7 @@
             </select>
           </div>
           <div class="form-actions-stack">
-            <button type="submit" class="btn-primary full">Save Article</button>
+            <button type="submit" class="btn-primary full" [disabled]="contentForm.invalid">Save Article</button>
             <button type="button" class="btn-outline full" routerLink="/admin/content">Cancel</button>
           </div>
         </div>

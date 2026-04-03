@@ -16,26 +16,36 @@ export class ApiService {
         return `${this.baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
     }
 
-    get<T>(path: string, params: HttpParams = new HttpParams()): Observable<T> {
-        return this.http.get<T>(this.getFullUrl(path), { params }).pipe(
+    get<T>(path: string, params: HttpParams = new HttpParams(), headers: HttpHeaders = new HttpHeaders()): Observable<T> {
+        return this.http.get<T>(this.getFullUrl(path), { params, headers }).pipe(
             catchError(this.formatErrors)
         );
     }
 
-    put<T>(path: string, body: any = {}): Observable<T> {
-        return this.http.put<T>(this.getFullUrl(path), JSON.stringify(body), {
-            headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    put<T>(path: string, body: any = {}, headers: HttpHeaders = new HttpHeaders()): Observable<T> {
+        const defaultHeaders = headers.has('Content-Type') ? headers : headers.set('Content-Type', 'application/json');
+        const finalBody = headers.get('Content-Type') === 'application/json' ? JSON.stringify(body) : body;
+        return this.http.put<T>(this.getFullUrl(path), finalBody, {
+            headers: defaultHeaders
         }).pipe(catchError(this.formatErrors));
     }
 
-    post<T>(path: string, body: any = {}): Observable<T> {
-        return this.http.post<T>(this.getFullUrl(path), JSON.stringify(body), {
-            headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    post<T>(path: string, body: any = {}, headers: HttpHeaders = new HttpHeaders()): Observable<T> {
+        const defaultHeaders = headers.has('Content-Type') ? headers : headers.set('Content-Type', 'application/json');
+        const finalBody = headers.get('Content-Type') === 'application/json' ? JSON.stringify(body) : body;
+        return this.http.post<T>(this.getFullUrl(path), finalBody, {
+            headers: defaultHeaders
         }).pipe(catchError(this.formatErrors));
     }
 
-    delete<T>(path: string): Observable<T> {
-        return this.http.delete<T>(this.getFullUrl(path)).pipe(
+    delete<T>(path: string, headers: HttpHeaders = new HttpHeaders(), body: any = null): Observable<T> {
+        const options: any = { headers };
+        if (body) {
+            const defaultHeaders = headers.has('Content-Type') ? headers : headers.set('Content-Type', 'application/json');
+            options.headers = defaultHeaders;
+            options.body = defaultHeaders.get('Content-Type') === 'application/json' ? JSON.stringify(body) : body;
+        }
+        return this.http.delete<T>(this.getFullUrl(path), options as { headers?: HttpHeaders, body?: any }).pipe(
             catchError(this.formatErrors)
         );
     }
