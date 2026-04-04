@@ -17,13 +17,13 @@
       <h2 class="section-title">All Courses</h2>
       <div class="list-actions">
         <div class="search-box">
-          <input type="text" placeholder="Search courses...">
+          <input type="text" placeholder="Search courses..." [(ngModel)]="searchTerm" (input)="applyFilters()">
         </div>
       </div>
     </div>
 
     <div class="courses-grid">
-      <div *ngFor="let course of courses" class="course-manage-card">
+      <div *ngFor="let course of filteredCourses" class="course-manage-card">
         <div class="course-manage-card__image">
           <img [src]="course.image" [alt]="course.title">
           <span class="status-badge" [ngClass]="course.status.toLowerCase()">{{ course.status }}</span>
@@ -70,4 +70,25 @@
       </div>
     </div>
   </section>
+
+  <!-- Deletion Confirmation Modal -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <button type="button" class="modal-close" (click)="closeDeleteModal()">&times;</button>
+      
+      <div class="modal-icon">
+        <i class="icon-warning"></i>
+      </div>
+      
+      <div class="modal-header">
+        <h3 class="modal-title">Delete Course?</h3>
+        <p class="modal-message">Are you sure you want to delete this course? This action is permanent and cannot be undone.</p>
+      </div>
+      
+      <div class="modal-actions">
+        <button type="button" class="btn-outline" (click)="closeDeleteModal()">Cancel</button>
+        <button type="button" class="btn-danger" (click)="confirmDelete()">Delete Course</button>
+      </div>
+    </div>
+  </div>
 </div>

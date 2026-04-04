@@ -13,42 +13,50 @@
   <form [formGroup] = "courseForm" (ngSubmit) = "onSubmit()" class="form-container">
     <div class="form-grid">
       <!-- Left Column: Basic Info -->
-      <div class="form-section">
-        <h2 class="section-title">Basic Information</h2>
-        
-        <div class="form-group">
-          <label for="title">Course Title</label>
-          <input id="title" type="text" formControlName="title" placeholder="e.g. Advanced Optometry 101">
-          <span class="error" *ngIf="courseForm.get('title')?.touched && courseForm.get('title')?.invalid">
-            Title is required (min 5 characters).
-          </span>
-        </div>
-
-        <div class="form-row">
+      <div class="form-main">
+        <div class="form-section">
+          <h2 class="section-title">Basic Information</h2>
+          
           <div class="form-group">
-            <label for="instructor">Instructor Name</label>
-            <input id="instructor" type="text" formControlName="instructor">
+            <label for="title">Course Title</label>
+            <input id="title" type="text" formControlName="title" placeholder="e.g. Advanced Optometry 101">
+            <span class="error" *ngIf="courseForm.get('title')?.touched && courseForm.get('title')?.invalid">
+              Title is required (min 5 characters).
+            </span>
           </div>
-          <div class="form-group">
-            <label for="status">Status</label>
-            <select id="status" formControlName="status">
-              <option value="Draft">Draft</option>
-              <option value="Published">Published</option>
-              <option value="Archived">Archived</option>
-            </select>
-          </div>
-        </div>
 
-        <div class="form-group">
-          <label for="description">Course Description</label>
-          <textarea id="description" formControlName="description" rows="5"></textarea>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="instructor">Instructor Name</label>
+              <input id="instructor" type="text" formControlName="instructor">
+              <span class="error" *ngIf="courseForm.get('instructor')?.touched && courseForm.get('instructor')?.invalid">
+                Instructor name is required.
+              </span>
+            </div>
+            <div class="form-group">
+              <label for="status">Status</label>
+              <select id="status" formControlName="status">
+                <option value="Draft">Draft</option>
+                <option value="Published">Published</option>
+                <option value="Archived">Archived</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Course Description</label>
+            <textarea id="description" formControlName="description" rows="5"></textarea>
+            <span class="error" *ngIf="courseForm.get('description')?.touched && courseForm.get('description')?.invalid">
+              Description is required.
+            </span>
+          </div>
         </div>
 
         <!-- Curriculum Section -->
-        <div class="curriculum-editor">
-          <div class="curriculum-editor__header">
+        <div class="form-section curriculum-editor">
+          <div class="editor-header">
             <h2 class="section-title">Curriculum</h2>
-            <button type="button" class="btn-secondary small" (click)="addCurriculumItem()">+ Add Lesson</button>
+            <button type="button" class="btn-add-text" (click)="addCurriculumItem()">+ Add Lesson</button>
           </div>
           
           <div class="curriculum-list" formArrayName="curriculum">
@@ -93,11 +101,30 @@
           </div>
         </div>
 
+        <!-- Features Section -->
+        <div class="form-section features-editor">
+          <div class="editor-header">
+            <h2 class="section-title">Course Features</h2>
+            <button type="button" class="btn-add-text" (click)="addFeature()">+ Add Feature</button>
+          </div>
+          
+          <div class="features-list" formArrayName="features">
+            <div *ngFor="let f of features.controls; let i = index" class="feature-item-form">
+              <div class="form-group">
+                <input type="text" [formControlName]="i" placeholder="e.g. Lifetime Access with Updates">
+              </div>
+              <button type="button" class="btn-delete-small" (click)="removeFeature(i)">
+                <i class="icon-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- Testimonials Section -->
-        <div class="testimonials-editor">
-          <div class="testimonials-editor__header">
+        <div class="form-section testimonials-editor">
+          <div class="editor-header">
             <h2 class="section-title">Student Feedbacks</h2>
-            <button type="button" class="btn-secondary small" (click)="addTestimonial()">+ Add Feedback</button>
+            <button type="button" class="btn-add-text" (click)="addTestimonial()">+ Add Feedback</button>
           </div>
           
           <div class="testimonials-list" formArrayName="testimonials">
@@ -130,8 +157,21 @@
           <h2 class="section-title">Course Meta</h2>
           
           <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" formControlName="category">
+              <option value="Optometry">Optometry</option>
+              <option value="Contact Lens">Contact Lens</option>
+              <option value="Dispensing">Dispensing</option>
+              <option value="Optical Science">Optical Science</option>
+            </select>
+          </div>
+
+          <div class="form-group">
             <label for="price">Price (₹)</label>
             <input id="price" type="text" formControlName="price">
+            <span class="error" *ngIf="courseForm.get('price')?.touched && courseForm.get('price')?.invalid">
+              Price is required.
+            </span>
           </div>
 
           <div class="form-row">
@@ -154,6 +194,11 @@
               <button type="button" class="btn-secondary small" (click)="thumbInput.click()">Change Image</button>
             </div>
             <input #thumbInput type="file" (change)="onThumbnailSelected($event)" style="display: none" accept="image/*">
+          </div>
+
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label for="thumbnailUrl">Thumbnail URL</label>
+            <input id="thumbnailUrl" type="text" formControlName="image" placeholder="https://example.com/image.jpg">
           </div>
         </div>
       </div>

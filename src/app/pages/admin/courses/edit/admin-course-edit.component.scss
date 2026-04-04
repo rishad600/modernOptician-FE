@@ -182,21 +182,40 @@
   }
 }
 
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  
+  .section-title {
+    margin-bottom: 0 !important;
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+.btn-add-text {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+
+  &:hover {
+    color: var(--text-primary);
+    transform: translateX(2px);
+  }
+}
+
 .curriculum-editor {
   margin-top: 3rem;
-
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    
-    .section-title {
-      margin-bottom: 0;
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-  }
 }
 
 .curriculum-list {
@@ -303,6 +322,33 @@
   }
 }
 
+.features-editor {
+  margin-top: 3rem;
+}
+
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.feature-item-form {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+
+  .form-group {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  .btn-delete-small {
+    margin-top: 0;
+    align-self: center;
+  }
+}
+
 .btn-delete-small {
   background: transparent;
   border: none;
@@ -384,17 +430,8 @@
   mask-image: url("data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpolyline%20points%3D%223%206%205%206%2021%206%22%2F%3E%3Cpath%20d%3D%22M19%206v14a2%202%200%200%201-2%202H7a2%202%200%200%201-2-2V6m3%200V4a2%202%200%200%201%202-2h4a2%202%200%200%201%202%202v2%22%2F%3E%3C%2Fsvg%3E");
 }
 
-
-
 .testimonials-editor {
   margin-top: 3rem;
-
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
 }
 
 .testimonials-list {
