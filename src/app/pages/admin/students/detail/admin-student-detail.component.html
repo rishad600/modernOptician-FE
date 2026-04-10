@@ -1,0 +1,113 @@
+<div class="student-detail" *ngIf="!isLoading && student">
+  <header class="detail-header">
+    <div class="header-left">
+      <button class="btn-back" (click)="goBack()">
+        <i class="icon-arrow-left"></i> Back to Students
+      </button>
+      <div class="header-title">
+        <h1>{{ student.student.name }} {{ student.student.lastName }}</h1>
+        <span class="id-badge">{{ student.studentId }}</span>
+      </div>
+    </div>
+    <!-- <div class="header-actions">
+      <button class="btn-outline">Send Email</button>
+      <button class="btn-danger">Suspend Student</button>
+    </div> -->
+  </header>
+
+  <div class="detail-grid">
+    <!-- Profile Card -->
+    <aside class="profile-card">
+      <div class="profile-header">
+        <div class="avatar-lg">{{ getInitials(student.student.name, student.student.lastName) }}</div>
+        <div class="profile-meta">
+          <span class="status-badge" [ngClass]="student.status.toLowerCase()">{{ student.status }}</span>
+          <p class="join-date">Member since {{ formatDate(student.joined) }}</p>
+        </div>
+      </div>
+
+      <div class="info-sections">
+        <div class="info-group">
+          <label>Email Address</label>
+          <p>{{ student.student.email }}</p>
+        </div>
+        <div class="info-group" *ngIf="student.student.mobile">
+          <label>Phone Number</label>
+          <p>{{ student.student.mobile }}</p>
+        </div>
+        <div class="info-group">
+          <label>Total Investment</label>
+          <p class="highlight">{{ formatCurrency(student.totalSpent) }}</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="stats-overview">
+        <div class="stat-item">
+          <span class="stat-label">Courses Enrolled</span>
+          <span class="stat-value">{{ student.courses }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Completed</span>
+          <span class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Certificates</span>
+          <span class="stat-value">0</span>
+        </div>
+      </div>
+
+      <div class="courses-section">
+        <div class="section-header">
+          <h2>Enrolled Courses</h2>
+        </div>
+
+        <div class="courses-table-container">
+          <table class="detail-table">
+            <thead>
+              <tr>
+                <th>Course Name</th>
+                <th>Enrolled Date</th>
+                <th>Progress</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="!student.enrolledCourses || student.enrolledCourses.length === 0">
+                <td colspan="4" class="empty-row">No courses enrolled yet</td>
+              </tr>
+              <tr *ngFor="let course of student.enrolledCourses">
+                <td class="course-name">{{ course.courseName }}</td>
+                <td>{{ formatDate(course.enrolledAt) }}</td>
+                <td>
+                  <span class="completion-status" [class.completed]="course.isCompleted">
+                    {{ course.isCompleted ? '100%' : 'In Progress' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="payment-badge" [ngClass]="course.paymentStatus.toLowerCase()">{{ course.paymentStatus }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="isLoading">
+  <div class="loader"></div>
+  <p>Fetching student profiles...</p>
+</div>
+
+<!-- Error State -->
+<div class="error-container" *ngIf="!isLoading && error">
+  <div class="error-icon">!</div>
+  <h2>Something went wrong</h2>
+  <p>{{ error }}</p>
+  <button class="btn-primary" (click)="goBack()">Return to Students</button>
+</div>

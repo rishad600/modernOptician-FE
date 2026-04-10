@@ -87,6 +87,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/admin/students/admin-students.component').then(m => m.AdminStudentsComponent)
       },
       {
+        path: 'students/:id',
+        loadComponent: () => import('./pages/admin/students/detail/admin-student-detail.component').then(m => m.AdminStudentDetailComponent)
+      },
+      {
         path: 'payments',
         loadComponent: () => import('./pages/admin/payments/admin-payments.component').then(m => m.AdminPaymentsComponent)
       },
