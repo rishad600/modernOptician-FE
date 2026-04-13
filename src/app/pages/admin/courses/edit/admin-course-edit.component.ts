@@ -1,10 +1,13 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../core/services/api.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
+
+declare var tus: any;
 
 @Component({
   selector: 'app-admin-course-edit',
@@ -17,6 +20,12 @@ export class AdminCourseEditComponent implements OnInit {
   courseForm: FormGroup;
   isEditMode = false;
   courseId: string | null = null;
+  Math = Math;
+
+  // Video Preview State
+  showVideoModal = false;
+  safeVideoUrl: SafeResourceUrl | null = null;
+  isLoadingPreview = false;
 
   constructor(
     private fb: FormBuilder,
@@ -24,7 +33,8 @@ export class AdminCourseEditComponent implements OnInit {
     private router: Router,
     private api: ApiService,
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private sanitizer: DomSanitizer
   ) {
     this.courseForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
@@ -56,10 +66,18 @@ export class AdminCourseEditComponent implements OnInit {
 
   addCurriculumItem() {
     const item = this.fb.group({
-      title: [''],
+      _id: [null],
+      title: ['', Validators.required],
+      description: [''],
       duration: [''],
       type: ['video', Validators.required],
-      file: ['']
+      file: [''],
+      videoFile: [null], // Store the actual File object
+      videoStatus: [null], // Server-side video status
+      uploadProgress: [0],
+      isUploading: [false],
+      isFreePreview: [false],
+      isSaving: [false]
     });
     this.curriculum.push(item);
   }
@@ -129,13 +147,18 @@ export class AdminCourseEditComponent implements OnInit {
 
           // Handle Curriculum
           while (this.curriculum.length) { this.curriculum.removeAt(0); }
-          if (data.curriculum && Array.isArray(data.curriculum)) {
-            data.curriculum.forEach((item: any) => {
+          if (data.lessonsArray && Array.isArray(data.lessonsArray)) {
+            data.lessonsArray.forEach((item: any) => {
               this.curriculum.push(this.fb.group({
+                _id: [item._id],
                 title: [item.title, Validators.required],
-                duration: [item.duration, Validators.required],
-                type: [item.type, Validators.required],
-                file: [item.file || '']
+                description: [item.description || ''],
+                duration: [item.duration || 0],
+                type: [item.type || 'video', Validators.required],
+                file: [item.file || ''],
+                videoStatus: [item.videoStatus || null],
+                isFreePreview: [item.isFreePreview || false],
+                isSaving: [false]
               }));
             });
           } else {
@@ -177,7 +200,10 @@ export class AdminCourseEditComponent implements OnInit {
   onFileSelected(event: any, index: number) {
     const file = event.target.files[0];
     if (file) {
-      this.curriculum.at(index).patchValue({ file: file.name });
+      this.curriculum.at(index).patchValue({ 
+        file: file.name,
+        videoFile: file // Save the file object for TUS upload
+      });
     }
   }
 
@@ -235,11 +261,180 @@ export class AdminCourseEditComponent implements OnInit {
     }
   }
 
+  saveLesson(index: number) {
+    const lessonGroup = this.curriculum.at(index) as FormGroup;
+    if (lessonGroup.invalid) {
+      lessonGroup.markAllAsTouched();
+      return;
+    }
+
+    if (!this.courseId) {
+      alert('Please save the course basics first before adding lessons.');
+      return;
+    }
+
+    lessonGroup.patchValue({ isSaving: true });
+    
+    const val = lessonGroup.value;
+    const payload = {
+      courseId: this.courseId,
+      title: val.title,
+      description: val.description || val.title,
+      order: index + 1,
+      isFreePreview: val.isFreePreview || false,
+      duration: this.parseDurationToSeconds(val.duration)
+    };
+
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.api.post<any>('web/admin/course/add-lesson', payload, headers).subscribe({
+      next: (res) => {
+        if (res.success) {
+          const lessonData = res.data;
+          lessonGroup.patchValue({ 
+            isSaving: false, 
+            _id: lessonData?._id || 'saved' 
+          });
+
+          // Chain video upload preparation if it's a video lesson
+          if (val.type === 'video' && lessonData?._id) {
+            this.prepareLessonVideo(this.courseId!, lessonData._id, headers, index);
+          }
+        }
+      },
+      error: (err) => {
+        lessonGroup.patchValue({ isSaving: false });
+        console.error('Error adding lesson:', err);
+      }
+    });
+  }
+
+  private prepareLessonVideo(courseId: string, lessonId: string, headers: HttpHeaders, index: number) {
+    const payload = { courseId, lessonId };
+    
+    this.api.post<any>('web/admin/course/prepare-video-upload', payload, headers).subscribe({
+      next: (res) => {
+        if (res.success) {
+          console.log('Video upload prepared:', res.data);
+          this.startTusUpload(index, res.data);
+        }
+      },
+      error: (err) => {
+        console.error('Error preparing video upload:', err);
+      }
+    });
+  }
+
+  private startTusUpload(index: number, uploadData: any) {
+    const lessonGroup = this.curriculum.at(index) as FormGroup;
+    
+    if (!lessonGroup) {
+      console.error('Lesson group not found at index:', index);
+      return;
+    }
+
+    const file = lessonGroup.get('videoFile')?.value;
+
+    if (!file) {
+      console.error('No file selected for video lesson');
+      this.cdr.detectChanges();
+      return;
+    }
+
+    lessonGroup.patchValue({ isUploading: true, uploadProgress: 0 });
+
+    const upload = new tus.Upload(file, {
+      endpoint: uploadData.tusEndpoint,
+      retryDelays: [0, 3000, 5000, 10000, 20000],
+      headers: {
+        AuthorizationSignature: uploadData.signature,
+        AuthorizationExpire: uploadData.expirationTime,
+        VideoId: uploadData.videoId,
+        LibraryId: uploadData.libraryId
+      },
+      metadata: {
+        filetype: file.type,
+        title: file.name
+      },
+      onError: (error: any) => {
+        console.error('Failed because: ' + error);
+        lessonGroup.patchValue({ isUploading: false });
+      },
+      onProgress: (bytesUploaded: number, bytesTotal: number) => {
+        const percentage = Math.round((bytesUploaded / bytesTotal) * 100);
+        lessonGroup.patchValue({ uploadProgress: percentage });
+        this.cdr.detectChanges();
+      },
+      onSuccess: () => {
+        console.log('Download %s from %s', upload.file.name, upload.url);
+        lessonGroup.patchValue({ isUploading: false, uploadProgress: 100 });
+        this.cdr.detectChanges();
+        // Refresh to see updated video status if needed
+        setTimeout(() => this.loadCourseData(this.courseId!), 2000);
+      }
+    });
+
+    upload.start();
+  }
+
+  private parseDurationToSeconds(duration: any): number {
+    if (typeof duration === 'number') return duration;
+    const match = String(duration).match(/(\d+)m/);
+    if (match) return parseInt(match[1]) * 60;
+    return parseInt(duration) || 0;
+  }
+
   private parseDuration(durationStr: string): number {
     const match = durationStr.match(/(\d+)h\s*(\d+)m/);
     if (match) {
       return parseInt(match[1]) * 60 + parseInt(match[2]);
     }
     return 0;
+  }
+
+  // --- Video Preview Methods ---
+  
+  previewLesson(index: number) {
+    const lesson = this.curriculum.at(index);
+    const lessonId = lesson.get('_id')?.value;
+    
+    if (!lessonId) {
+      alert('Please save the lesson first before previewing.');
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.isLoadingPreview = true;
+    this.api.get<any>(`web/admin/course/play/${lessonId}`, new HttpParams(), headers).subscribe({
+      next: (res) => {
+        this.isLoadingPreview = false;
+        if (res.success && res.data?.playUrl) {
+          this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(res.data.playUrl);
+          this.showVideoModal = true;
+          this.cdr.detectChanges();
+        } else if (res.code === 206) {
+          alert(res.message || 'Video is not ready for playback yet.');
+        }
+      },
+      error: (err) => {
+        this.isLoadingPreview = false;
+        console.error('Error fetching playback URL:', err);
+        alert('Failed to load video player. Please try again.');
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  closeVideoModal() {
+    this.showVideoModal = false;
+    this.safeVideoUrl = null;
+    this.cdr.detectChanges();
   }
 }

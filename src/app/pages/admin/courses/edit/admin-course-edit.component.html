@@ -73,7 +73,21 @@
                     <input type="text" formControlName="duration" placeholder="10m">
                   </div>
                 </div>
+
+                <div class="form-row full-width">
+                  <div class="form-group">
+                    <label>Description</label>
+                    <textarea formControlName="description" rows="2" placeholder="Briefly describe what students will learn..."></textarea>
+                  </div>
+                </div>
+
                 <div class="form-row">
+                  <div class="form-group compact checkbox-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" formControlName="isFreePreview">
+                      <span>Free Preview</span>
+                    </label>
+                  </div>
                   <div class="form-group compact">
                     <label>Type</label>
                     <select formControlName="type">
@@ -82,7 +96,13 @@
                     </select>
                   </div>
                   <div class="form-group file-upload-group">
-                    <label>Resource (Video/Doc)</label>
+                    <div class="label-with-action">
+                      <label>Resource (Video/Doc)</label>
+                      <button type="button" class="btn-play-preview-link" *ngIf="item.get('_id')?.value" (click)="previewLesson(i)" title="Preview Video">
+                        <i class="icon-play-sm"></i>
+                        <span>Watch Preview</span>
+                      </button>
+                    </div>
                     <div class="file-upload-wrapper">
                       <input type="text" formControlName="file" placeholder="Upload file or enter URL" class="file-path-input">
                       <button type="button" class="btn-upload-trigger" (click)="fileInput.click()">
@@ -93,10 +113,37 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="item-actions" *ngIf="isEditMode && !item.get('_id')?.value">
+                  <button type="button" class="btn-save-item" (click)="saveLesson(i)" [disabled]="item.get('isSaving')?.value || item.get('isUploading')?.value">
+                    {{ item.get('isSaving')?.value ? 'Saving...' : (item.get('isUploading')?.value ? 'Uploading Video...' : 'Confirm & Save Lesson') }}
+                  </button>
+                </div>
+
+                <!-- Upload Progress -->
+                <div class="upload-status-container" *ngIf="item.get('isUploading')?.value || item.get('uploadProgress')?.value > 0">
+                  <div class="progress-info">
+                    <span class="status-text">{{ item.get('uploadProgress')?.value === 100 ? 'Upload Complete' : 'Uploading Video...' }}</span>
+                    <span class="percentage">{{ item.get('uploadProgress')?.value }}%</span>
+                  </div>
+                  <div class="progress-bar-outer">
+                    <div class="progress-bar-inner" [style.width.%]="item.get('uploadProgress')?.value"></div>
+                  </div>
+                </div>
+
+                <div class="item-status" *ngIf="item.get('_id')?.value && !item.get('isUploading')?.value && !(item.get('uploadProgress')?.value > 0 && item.get('uploadProgress')?.value < 100)">
+                  <span class="badge-success" *ngIf="!item.get('videoStatus')?.value || item.get('videoStatus')?.value === 'Finished' || item.get('videoStatus')?.value === 'ResolutionFinished'">Saved to Course</span>
+                  <span class="badge-warning" *ngIf="item.get('videoStatus')?.value === 'Queued'">Preparing...</span>
+                  <span class="badge-info" *ngIf="item.get('videoStatus')?.value === 'Processing' || item.get('videoStatus')?.value === 'Encoding'">Processing...</span>
+                  <span class="badge-danger" *ngIf="item.get('videoStatus')?.value === 'Failed'">Upload Failed</span>
+                </div>
               </div>
-              <button type="button" class="btn-delete-small" (click)="removeCurriculumItem(i)">
-                <i class="icon-trash"></i>
-              </button>
+
+              <div class="curriculum-item-actions">
+                <button type="button" class="btn-delete-small" (click)="removeCurriculumItem(i)" title="Delete Lesson">
+                  <i class="icon-trash"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -209,4 +256,30 @@
       <button type="submit" class="btn-primary">{{ isEditMode ? 'Update Course' : 'Create Course' }}</button>
     </div>
   </form>
+
+  <!-- Video Preview Modal -->
+  <div class="modal-overlay" *ngIf="showVideoModal" (click)="closeVideoModal()">
+    <div class="modal-container video-modal" (click)="$event.stopPropagation()">
+      <button type="button" class="modal-close" (click)="closeVideoModal()">&times;</button>
+      
+      <div class="modal-header">
+        <h3 class="modal-title">Lesson Preview</h3>
+      </div>
+
+      <div class="video-player-container">
+        <iframe 
+          *ngIf="safeVideoUrl"
+          [src]="safeVideoUrl" 
+          loading="lazy" 
+          style="border: none; position: absolute; top: 0; height: 100%; width: 100%;" 
+          allow="autoplay; gyroscope; encrypted-media; picture-in-picture;" 
+          allowfullscreen="true">
+        </iframe>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-outline" (click)="closeVideoModal()">Close Preview</button>
+      </div>
+    </div>
+  </div>
 </div>
