@@ -13,7 +13,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
   courseId: string | null = null;
   activeStatIndex: number = 0;
   private statsInterval: any;
-  
+
   course = {
     title: 'Basic Optical Science',
     category: 'OPTICS',
@@ -66,7 +66,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.courseId = this.route.snapshot.paramMap.get('id');

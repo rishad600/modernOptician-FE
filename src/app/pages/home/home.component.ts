@@ -1,7 +1,10 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TestimonialsComponent } from './sections/testimonials/testimonials.component';
 import { CourseCardComponent } from '../../shared/components/course-card/course-card.component';
+import { ApiService } from '../../core/services/api.service';
+import { catchError, throwError } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -14,13 +17,56 @@ import { CourseCardComponent } from '../../shared/components/course-card/course-
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements AfterViewInit, OnDestroy {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
   @ViewChild('heroSection') heroSection!: ElementRef<HTMLElement>;
   
   showVideoModal = false;
   videoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4'; // Placeholder premium-looking video
   private observer: IntersectionObserver | null = null;
+  plans: any[] = [];
+
+  constructor(
+    private api: ApiService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this.fetchCourses();
+  }
+
+  fetchCourses() {
+    this.api.get<any>('web/public/course', new HttpParams()).pipe(
+      catchError(err => {
+        console.error('API Error fetching public courses:', err);
+        return throwError(() => err);
+      })
+    ).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.plans = res.data.map((c: any) => ({
+            id: c._id,
+            title: c.name,
+            price: this.formatPrice(c.price, c.currency),
+            features: c.features || ['4 Video Chapters', 'Lens Physics & Optics', 'Frame Selection Basics', 'Lifetime Access'],
+            image: c.thumbnail || 'images/article-1.jpg'
+          }));
+          this.cdr.detectChanges();
+        }
+      }
+    });
+  }
+
+  private formatPrice(price: any, currency: string): string {
+    const amount = parseFloat(price);
+    if (isNaN(amount)) return price;
+    
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency || 'USD',
+      minimumFractionDigits: 2
+    }).format(amount);
+  }
 
   openVideoModal() {
     this.showVideoModal = true;
@@ -69,36 +115,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.cleanupObserver();
   }
 
-  plans = [
-    {
-      id: 'basic-optics',
-      title: 'Basic Optical Science',
-      price: '$80.00',
-      features: ['4 Video Chapters', 'Lens Physics & Optics', 'Frame Selection Basics', 'Lifetime Access'],
-      image: 'images/article-1.jpg'
-    },
-    {
-      id: 'clinical-procedures',
-      title: 'Clinical Procedures',
-      price: '$80.00',
-      features: ['4 Video Chapters', 'Lens Physics & Optics', 'Frame Selection Basics', 'Lifetime Access'],
-      image: 'images/article-1.jpg'
-    },
-    {
-      id: 'contact-lens',
-      title: 'Contact Lens Theory',
-      price: '$80.00',
-      features: ['4 Video Chapters', 'Lens Physics & Optics', 'Frame Selection Basics', 'Lifetime Access'],
-      image: 'images/article-1.jpg'
-    },
-    {
-      id: 'modern-tech',
-      title: 'Modern Lens Tech',
-      price: '$80.00',
-      features: ['4 Video Chapters', 'Lens Physics & Optics', 'Frame Selection Basics', 'Lifetime Access'],
-      image: 'images/article-1.jpg'
-    }
-  ];
 
   steps = [
     {
