@@ -10,35 +10,58 @@
   </header>
 
   <div class="payments-stats">
-    <div class="stat-card">
-      <span class="stat-card__label">Total Revenue</span>
-      <span class="stat-card__value">₹44,497</span>
-      <span class="stat-card__trend positive">+12.5% vs last month</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-card__label">Succesful Payments</span>
-      <span class="stat-card__value">142</span>
-      <span class="stat-card__trend positive">+8%</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-card__label">Pending Issues</span>
-      <span class="stat-card__value">3</span>
-      <span class="stat-card__trend negative">+2 new today</span>
-    </div>
+    <!-- Loading State -->
+    <ng-container *ngIf="isLoadingStats; else statsContent">
+      <div class="stat-card skeleton" *ngFor="let i of [1,2,3]">
+        <div class="skeleton-label"></div>
+        <div class="skeleton-value"></div>
+        <div class="skeleton-trend"></div>
+      </div>
+    </ng-container>
+
+
+    <!-- Stats Content -->
+    <ng-template #statsContent>
+      <div class="stat-card" *ngIf="stats">
+        <span class="stat-card__label">Total Revenue</span>
+        <span class="stat-card__value">{{ formatCurrency(stats.revenue.total) }}</span>
+        <span class="stat-card__trend" [ngClass]="stats.revenue.growthPercentage >= 0 ? 'positive' : 'negative'">
+          {{ stats.revenue.growthPercentage >= 0 ? '+' : '' }}{{ stats.revenue.growthPercentage }}% vs last month
+        </span>
+      </div>
+      <div class="stat-card" *ngIf="stats">
+        <span class="stat-card__label">Successful Payments</span>
+        <span class="stat-card__value">{{ stats.successPayment.total }}</span>
+        <span class="stat-card__trend" [ngClass]="stats.successPayment.growthPercentage >= 0 ? 'positive' : 'negative'">
+          {{ stats.successPayment.growthPercentage >= 0 ? '+' : '' }}{{ stats.successPayment.growthPercentage }}%
+        </span>
+      </div>
+      <div class="stat-card" *ngIf="stats">
+        <span class="stat-card__label">Pending Issues</span>
+        <span class="stat-card__value">{{ stats.pendingPayment.total }}</span>
+        <span class="stat-card__trend" [ngClass]="stats.pendingPayment.todaysPending > 0 ? 'negative' : 'positive'">
+          {{ stats.pendingPayment.todaysPending > 0 ? '+' : '' }}{{ stats.pendingPayment.todaysPending }} new today
+        </span>
+      </div>
+    </ng-template>
+
+
+
   </div>
+
 
   <div class="table-container">
     <div class="table-header">
       <div class="search-box">
         <i class="icon-search"></i>
-        <input type="text" placeholder="Search by student or TXN ID...">
+        <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Search by student or TXN ID...">
       </div>
       <div class="filters">
-        <select>
-          <option>All Status</option>
-          <option>Success</option>
-          <option>Pending</option>
-          <option>Failed</option>
+        <select [(ngModel)]="statusFilter" (change)="onFilter()">
+          <option value="">All Status</option>
+          <option value="Success">Success</option>
+          <option value="Pending">Pending</option>
+          <option value="Failed">Failed</option>
         </select>
       </div>
     </div>
@@ -51,12 +74,18 @@
           <th>Course</th>
           <th>Amount</th>
           <th>Date</th>
-          <th>Status</th>
-          <th>Actions</th>
+          <th class="text-center">Status</th>
+          <th class="text-center">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let txn of transactions">
+        <tr *ngIf="transactions.length === 0 && !isLoadingPayments">
+          <td colspan="7" class="empty-state">No transactions found</td>
+        </tr>
+        <tr *ngIf="isLoadingPayments && transactions.length === 0">
+          <td colspan="7" class="loading-state">Loading transactions...</td>
+        </tr>
+        <tr *ngFor="let txn of transactions" [class.loading]="isLoadingPayments">
           <td class="txn-id">{{ txn.id }}</td>
           <td class="student-info">
             <span class="name">{{ txn.student }}</span>
@@ -65,12 +94,12 @@
           <td class="course-name">{{ txn.course }}</td>
           <td class="amount">{{ txn.amount }}</td>
           <td class="date">{{ txn.date }}</td>
-          <td>
+          <td class="text-center">
             <span class="status-badge" [ngClass]="getStatusClass(txn.status)">
               {{ txn.status }}
             </span>
           </td>
-          <td>
+          <td class="text-center">
             <button class="btn-icon" (click)="viewReceipt(txn.id)" title="View Receipt">
               <i class="icon-receipt"></i>
             </button>
@@ -78,5 +107,22 @@
         </tr>
       </tbody>
     </table>
+
+    <div class="table-footer" *ngIf="totalCount > 0">
+        <div class="table-footer__info">
+          Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, totalCount) }} of {{
+          totalCount }} transactions
+        </div>
+        <div class="pagination">
+          <button class="btn-pagination" [disabled]="currentPage === 1" (click)="prevPage()">
+            <i class="icon-chevron-left"></i> Previous
+          </button>
+          <span class="page-indicator">Page {{ currentPage }} of {{ totalPages }}</span>
+          <button class="btn-pagination" [disabled]="currentPage * pageSize >= totalCount" (click)="nextPage()">
+            Next <i class="icon-chevron-right"></i>
+          </button>
+        </div>
+      </div>
   </div>
+
 </div>
