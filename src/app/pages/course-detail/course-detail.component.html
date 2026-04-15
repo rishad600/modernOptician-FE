@@ -1,4 +1,18 @@
-<div class="course-detail">
+<div class="course-detail-loading" *ngIf="isLoading">
+  <div class="spinner"></div>
+  <p>Loading course details...</p>
+</div>
+
+<div class="course-detail-error" *ngIf="error">
+  <div class="error-content">
+    <span class="error-icon">!</span>
+    <h2>Oops!</h2>
+    <p>{{ error }}</p>
+    <button class="btn-primary" routerLink="/courses">Go Back to Courses</button>
+  </div>
+</div>
+
+<div class="course-detail" *ngIf="!isLoading && !error">
   <!-- Breadcrumbs -->
   <div class="container">
     <nav class="breadcrumbs">
@@ -23,7 +37,7 @@
             <span>{{ course.lessons }} Lessons</span>
           </p>
           
-          <div class="video-container">
+          <div class="video-container" (click)="watchPreview()">
             <div class="video-placeholder">
               <img [src]="course.image" [alt]="course.title" class="video-thumbnail">
               <div class="play-overlay">
@@ -45,13 +59,12 @@
             
             <button class="btn-primary full-width">ENROLL NOW</button>
             
-            <div class="course-sidebar__features">
+            <div class="course-sidebar__features" *ngIf="course.features && course.features.length > 0">
               <h4 class="features-title">This course includes:</h4>
               <ul>
-                <li><i class="icon-video"></i> {{ course.duration }} on-demand video</li>
-                <li><i class="icon-access"></i> Full lifetime access</li>
-                <li><i class="icon-device"></i> Access on mobile and TV</li>
-                <li><i class="icon-certificate"></i> Certificate of completion</li>
+                <li *ngFor="let feature of course.features">
+                  <i class="icon-check"></i> {{ feature }}
+                </li>
               </ul>
             </div>
           </div>
@@ -88,7 +101,10 @@
           <div class="content-block">
             <h2 class="content-title">Curriculum</h2>
             <div class="curriculum-list">
-              <div class="curriculum-item" *ngFor="let item of curriculum" [class.is-locked]="item.isLocked">
+              <div class="curriculum-item" 
+                   *ngFor="let item of curriculum" 
+                   [class.is-locked]="item.isLocked"
+                   (click)="!item.isLocked && playLesson(item.id)">
                 <div class="curriculum-item__info">
                   <span class="status-icon" [class.locked]="item.isLocked"></span>
                   <span class="item-title">{{ item.title }}</span>
@@ -105,7 +121,7 @@
     </div>
   </section>
 
-  <section class="course-testimonials">
+  <section class="course-testimonials" *ngIf="testimonials.length > 0">
     <div class="container">
       <h2 class="course-testimonials__title">Student Feedbacks</h2>
       <div class="course-testimonials__grid">
@@ -131,4 +147,39 @@
       </div>
     </div>
   </section>
+
+  <!-- Video Preview Modal -->
+  <div class="video-modal" *ngIf="showVideoModal" (click)="closeVideoModal()">
+    <div class="video-modal__overlay"></div>
+    <div class="video-modal__content" (click)="$event.stopPropagation()">
+      <button class="video-modal__close" (click)="closeVideoModal()">
+        <span class="close-icon">&times;</span>
+      </button>
+      
+      <div class="video-player-container">
+        <!-- Loading State -->
+        <div class="video-loader" *ngIf="isFetchingVideo">
+          <div class="spinner"></div>
+          <p>Signing your playback URL...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="video-error" *ngIf="videoError">
+          <span class="error-icon">!</span>
+          <p>{{ videoError }}</p>
+          <button class="btn-primary" (click)="closeVideoModal()">Close</button>
+        </div>
+
+        <!-- The Player -->
+        <div class="iframe-wrapper" *ngIf="!isFetchingVideo && !videoError && safeVideoUrl">
+          <iframe [src]="safeVideoUrl"
+                  loading="lazy"
+                  style="border: none; position: absolute; top: 0; height: 100%; width: 100%;"
+                  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                  allowfullscreen="true">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray } fr
 import { ApiService } from '../../../../core/services/api.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
+import { ToastService } from '../../../../core/services/toast.service';
 
 declare var tus: any;
 
@@ -27,6 +28,9 @@ export class AdminCourseEditComponent implements OnInit {
   safeVideoUrl: SafeResourceUrl | null = null;
   isLoadingPreview = false;
 
+  // Delete Confirmation Modal State
+  showDeleteModal = false;
+  itemToDeleteIndex: number | null = null;
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -34,7 +38,8 @@ export class AdminCourseEditComponent implements OnInit {
     private api: ApiService,
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private toastService: ToastService
   ) {
     this.courseForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
@@ -73,17 +78,85 @@ export class AdminCourseEditComponent implements OnInit {
       type: ['video', Validators.required],
       file: [''],
       videoFile: [null], // Store the actual File object
+      bunnyVideoId: [null],
       videoStatus: [null], // Server-side video status
       uploadProgress: [0],
       isUploading: [false],
       isFreePreview: [false],
-      isSaving: [false]
+      isSaving: [false],
+      isDeleting: [false]
     });
     this.curriculum.push(item);
   }
 
   removeCurriculumItem(index: number) {
-    this.curriculum.removeAt(index);
+    const lessonGroup = this.curriculum.at(index) as FormGroup;
+    const lessonId = lessonGroup.get('_id')?.value;
+
+    if (!lessonId) {
+      // For unsaved lessons, just remove from UI
+      this.curriculum.removeAt(index);
+      return;
+    }
+
+    // Show custom confirmation modal instead of confirm()
+    this.itemToDeleteIndex = index;
+    this.showDeleteModal = true;
+    this.cdr.detectChanges();
+  }
+
+  confirmDelete() {
+    if (this.itemToDeleteIndex === null) return;
+    
+    const index = this.itemToDeleteIndex;
+    const lessonGroup = this.curriculum.at(index) as FormGroup;
+    const lessonId = lessonGroup.get('_id')?.value;
+    const bunnyVideoId = lessonGroup.get('bunnyVideoId')?.value;
+
+    this.showDeleteModal = false;
+    lessonGroup.patchValue({ isDeleting: true });
+    
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    // 1. Delete video from Bunny if exists
+    if (bunnyVideoId) {
+      this.api.delete<any>(`web/admin/course/delete-video/${bunnyVideoId}`, headers).subscribe({
+        next: (res) => {
+          console.log('Associated video deleted from Bunny');
+          if (res.success) {
+            this.toastService.success(res.message || 'Video deleted successfully');
+          }
+        },
+        error: (err) => console.error('Failed to delete video from Bunny:', err)
+      });
+    }
+
+    // 2. Trash the lesson in DB
+    this.api.patch<any>(`web/admin/course/trash-lesson/${lessonId}`, { isTrashed: true }, headers).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.toastService.success(res.message || 'Lesson trashed successfully');
+          this.curriculum.removeAt(index);
+          this.itemToDeleteIndex = null;
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => {
+        lessonGroup.patchValue({ isDeleting: false });
+        this.itemToDeleteIndex = null;
+        console.error('Error trashing lesson:', err);
+        this.toastService.error('Failed to delete lesson. Please try again.');
+      }
+    });
+  }
+
+  cancelDelete() {
+    this.showDeleteModal = false;
+    this.itemToDeleteIndex = null;
+    this.cdr.detectChanges();
   }
 
   addTestimonial() {
@@ -156,9 +229,11 @@ export class AdminCourseEditComponent implements OnInit {
                 duration: [item.duration || 0],
                 type: [item.type || 'video', Validators.required],
                 file: [item.file || ''],
+                bunnyVideoId: [item.bunnyVideoId || null],
                 videoStatus: [item.videoStatus || null],
                 isFreePreview: [item.isFreePreview || false],
-                isSaving: [false]
+                isSaving: [false],
+                isDeleting: [false]
               }));
             });
           } else {

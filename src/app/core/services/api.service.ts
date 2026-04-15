@@ -30,6 +30,14 @@ export class ApiService {
         }).pipe(catchError(this.formatErrors));
     }
 
+    patch<T>(path: string, body: any = {}, headers: HttpHeaders = new HttpHeaders()): Observable<T> {
+        const defaultHeaders = headers.has('Content-Type') ? headers : headers.set('Content-Type', 'application/json');
+        const finalBody = headers.get('Content-Type') === 'application/json' ? JSON.stringify(body) : body;
+        return this.http.patch<T>(this.getFullUrl(path), finalBody, {
+            headers: defaultHeaders
+        }).pipe(catchError(this.formatErrors));
+    }
+
     post<T>(path: string, body: any = {}, headers: HttpHeaders = new HttpHeaders()): Observable<T> {
         const defaultHeaders = headers.has('Content-Type') ? headers : headers.set('Content-Type', 'application/json');
         const finalBody = headers.get('Content-Type') === 'application/json' ? JSON.stringify(body) : body;

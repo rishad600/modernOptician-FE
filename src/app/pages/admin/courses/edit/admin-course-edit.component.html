@@ -140,8 +140,13 @@
               </div>
 
               <div class="curriculum-item-actions">
-                <button type="button" class="btn-delete-small" (click)="removeCurriculumItem(i)" title="Delete Lesson">
-                  <i class="icon-trash"></i>
+                <button type="button" 
+                        class="btn-delete-small" 
+                        (click)="removeCurriculumItem(i)" 
+                        [disabled]="item.get('isDeleting')?.value"
+                        title="Delete Lesson">
+                  <i class="icon-trash" *ngIf="!item.get('isDeleting')?.value"></i>
+                  <div class="spinner-small" *ngIf="item.get('isDeleting')?.value"></div>
                 </button>
               </div>
             </div>
@@ -279,6 +284,29 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-outline" (click)="closeVideoModal()">Close Preview</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+    <div class="modal-container confirm-modal" (click)="$event.stopPropagation()">
+      <button type="button" class="modal-close-small" (click)="cancelDelete()">&times;</button>
+      
+      <div class="confirm-modal__icon">
+        <i class="icon-warning"></i>
+      </div>
+
+      <div class="confirm-modal__content">
+        <h3 class="confirm-modal__title">Delete Lesson?</h3>
+        <p class="confirm-modal__text">
+          Are you sure you want to delete this lesson? This action is permanent and cannot be undone.
+        </p>
+      </div>
+
+      <div class="confirm-modal__footer">
+        <button type="button" class="btn-confirm-cancel" (click)="cancelDelete()">Cancel</button>
+        <button type="button" class="btn-confirm-delete" (click)="confirmDelete()">Delete Lesson</button>
       </div>
     </div>
   </div>
