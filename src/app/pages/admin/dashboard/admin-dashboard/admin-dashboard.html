@@ -48,12 +48,21 @@
   </aside> -->
 
   <!-- Main Content Area -->
-  <main class="dashboard__content">
+  <main class="dashboard__content" [class.is-loading]="isLoading">
     <section class="admin-header">
       <div class="admin-header__content">
         <h1 class="admin-header__title">Overview</h1>
+        <p class="admin-header__subtitle" *ngIf="!isLoading">Showing performance for the {{ selectedCategory }} category</p>
       </div>
       <div class="admin-header__actions">
+        <div class="header-filters">
+          <select [(ngModel)]="selectedCategory" (change)="onFilterChange()" class="filter-select">
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+          <select [(ngModel)]="selectedPeriod" (change)="onFilterChange()" class="filter-select">
+            <option *ngFor="let p of periods" [value]="p.value">{{ p.label }}</option>
+          </select>
+        </div>
         <a routerLink="/admin/courses/new" class="btn-primary">Add Course</a>
       </div>
     </section>
@@ -61,14 +70,16 @@
     <!-- Stats Section -->
     <section class="admin-stats">
       <div class="stats-grid">
+        <div *ngIf="isLoading" class="stats-grid-skeleton">
+          <div class="stat-card skeleton" *ngFor="let i of [1,2,3,4]"></div>
+        </div>
         <div *ngFor="let stat of stats" class="stat-card">
           <div class="stat-card__icon" [ngClass]="stat.icon"></div>
           <div class="stat-card__info">
             <span class="stat-card__label">{{ stat.label }}</span>
             <div class="stat-card__footer">
               <span class="stat-card__value">{{ stat.value }}</span>
-              <span class="stat-card__trend" [ngClass]="{'positive': stat.trend.startsWith('+')}">{{ stat.trend
-                }}</span>
+              <span class="stat-card__trend" [ngClass]="{'positive': stat.trend.startsWith('+')}">{{ stat.trend }}</span>
             </div>
           </div>
         </div>
@@ -76,13 +87,13 @@
     </section>
 
     <!-- Analytics Section -->
-    <section class="admin-analytics">
+    <section class="admin-analytics" *ngIf="revenueData.length > 0">
       <div class="analytics-grid">
         <!-- Revenue Trend (Line Chart) -->
         <div class="analytics-card chart-line">
           <div class="analytics-card__header">
-            <h2 class="analytics-card__title">Revenue Trend (6 Months)</h2>
-            <span class="analytics-card__total">Total: ₹3,28,000</span>
+            <h2 class="analytics-card__title">Revenue Trend ({{ selectedPeriod === '6_months' ? '6 Months' : selectedPeriod.replace('_', ' ') }})</h2>
+            <span class="analytics-card__total">Total: {{ formatCurrency(totalRevenueAmount) }}</span>
           </div>
           <div class="chart-container">
             <svg viewBox="0 0 500 150" class="line-chart">
@@ -93,21 +104,17 @@
               <line x1="0" y1="150" x2="500" y2="150" stroke="#f1f5f9" />
 
               <!-- Data path -->
-              <path d="M0,120 C80,100 160,110 240,70 C320,30 400,90 500,50" fill="none" stroke="var(--color-primary)"
-                stroke-width="3" />
+              <path [attr.d]="revenuePath" fill="none" stroke="var(--color-primary)" stroke-width="3" />
+              
               <!-- Points -->
-              <circle cx="0" cy="120" r="4" fill="var(--color-primary)" />
-              <circle cx="100" cy="105" r="4" fill="var(--color-primary)" />
-              <circle cx="200" cy="90" r="4" fill="var(--color-primary)" />
-              <circle cx="300" cy="40" r="4" fill="var(--color-primary)" />
-              <circle cx="400" cy="70" r="4" fill="var(--color-primary)" />
-              <circle cx="500" cy="50" r="4" fill="var(--color-primary)" />
+              <circle *ngFor="let p of chartPoints" [attr.cx]="p.cx" [attr.cy]="p.cy" r="4" fill="var(--color-primary)" />
             </svg>
             <div class="chart-labels">
               <span *ngFor="let d of revenueData">{{ d.month }}</span>
             </div>
           </div>
         </div>
+
 
         <!-- Enrollment Breakdown (Bar Chart) -->
         <div class="analytics-card chart-bar">
@@ -118,7 +125,7 @@
             <div class="bar-chart-container">
               <div *ngFor="let d of enrollmentData" class="bar-group">
                 <div class="bar-value">{{ d.count }}</div>
-                <div class="bar" [style.height.%]="(d.count / 150) * 100"></div>
+                <div class="bar" [style.height.px]="Math.min(d.count * 2, 120)"></div>
                 <div class="bar-label">{{ d.course }}</div>
               </div>
             </div>
@@ -164,6 +171,9 @@
       <section class="admin-timeline">
         <h2 class="section-title">Recent Activity</h2>
         <div class="timeline-feed">
+          <div *ngIf="recentActivities.length === 0 && !isLoading" class="empty-activities">
+             No recent activities found.
+          </div>
           <div *ngFor="let activity of recentActivities" class="timeline-item">
             <div class="timeline-item__dot" [ngClass]="activity.type"></div>
             <div class="timeline-item__content">
@@ -186,4 +196,5 @@
     </div>
 
   </main>
+
 </div>
