@@ -221,7 +221,7 @@ export class AdminCourseEditComponent implements OnInit {
           // Handle Curriculum
           while (this.curriculum.length) { this.curriculum.removeAt(0); }
           if (data.lessonsArray && Array.isArray(data.lessonsArray)) {
-            data.lessonsArray.forEach((item: any) => {
+            data.lessonsArray.filter((item: any) => !item.isTrashed).forEach((item: any) => {
               this.curriculum.push(this.fb.group({
                 _id: [item._id],
                 title: [item.title, Validators.required],
@@ -344,47 +344,82 @@ export class AdminCourseEditComponent implements OnInit {
     }
 
     if (!this.courseId) {
-      alert('Please save the course basics first before adding lessons.');
+      this.toastService.error('Please save the course basics first before adding lessons.');
       return;
     }
 
     lessonGroup.patchValue({ isSaving: true });
     
     const val = lessonGroup.value;
-    const payload = {
-      courseId: this.courseId,
-      title: val.title,
-      description: val.description || val.title,
-      order: index + 1,
-      isFreePreview: val.isFreePreview || false,
-      duration: this.parseDurationToSeconds(val.duration)
-    };
-
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
-    this.api.post<any>('web/admin/course/add-lesson', payload, headers).subscribe({
-      next: (res) => {
-        if (res.success) {
-          const lessonData = res.data;
-          lessonGroup.patchValue({ 
-            isSaving: false, 
-            _id: lessonData?._id || 'saved' 
-          });
+    const isUpdate = !!(val._id && val._id !== 'saved');
 
-          // Chain video upload preparation if it's a video lesson
-          if (val.type === 'video' && lessonData?._id) {
-            this.prepareLessonVideo(this.courseId!, lessonData._id, headers, index);
+    if (isUpdate) {
+      const payload = {
+        title: val.title,
+        description: val.description || val.title,
+        duration: this.parseDurationToSeconds(val.duration),
+        isFreePreview: val.isFreePreview || false
+      };
+
+      this.api.put<any>(`web/admin/course/update-lesson/${val._id}`, payload, headers).subscribe({
+        next: (res) => {
+          if (res.success) {
+            lessonGroup.patchValue({ isSaving: false });
+            this.toastService.success(res.message || 'Lesson updated successfully');
+
+            // Handle new video upload for existing lesson
+            if (val.type === 'video' && val.videoFile) {
+              this.prepareLessonVideo(this.courseId!, val._id, headers, index);
+            }
+          } else if (res.code === 206) {
+            this.toastService.error(res.message || 'Update couldn\'t be completed.');
+            lessonGroup.patchValue({ isSaving: false });
           }
+        },
+        error: (err) => {
+          lessonGroup.patchValue({ isSaving: false });
+          console.error('Error updating lesson:', err);
+          this.toastService.error('Failed to update lesson. Please try again.');
         }
-      },
-      error: (err) => {
-        lessonGroup.patchValue({ isSaving: false });
-        console.error('Error adding lesson:', err);
-      }
-    });
+      });
+    } else {
+      const payload = {
+        courseId: this.courseId,
+        title: val.title,
+        description: val.description || val.title,
+        order: index + 1,
+        isFreePreview: val.isFreePreview || false,
+        duration: this.parseDurationToSeconds(val.duration)
+      };
+
+      this.api.post<any>('web/admin/course/add-lesson', payload, headers).subscribe({
+        next: (res) => {
+          if (res.success) {
+            const lessonData = res.data;
+            lessonGroup.patchValue({ 
+              isSaving: false, 
+              _id: lessonData?._id || 'saved' 
+            });
+            this.toastService.success(res.message || 'Lesson added successfully');
+
+            // Chain video upload preparation if it's a video lesson
+            if (val.type === 'video' && lessonData?._id) {
+              this.prepareLessonVideo(this.courseId!, lessonData._id, headers, index);
+            }
+          }
+        },
+        error: (err) => {
+          lessonGroup.patchValue({ isSaving: false });
+          console.error('Error adding lesson:', err);
+          this.toastService.error('Failed to add lesson. Please try again.');
+        }
+      });
+    }
   }
 
   private prepareLessonVideo(courseId: string, lessonId: string, headers: HttpHeaders, index: number) {

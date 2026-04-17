@@ -80,19 +80,21 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
             title: data.name,
             instructor: data.instructorName || 'Dr. Sarah Mitchell',
             duration: this.formatMinutes(data.totalDuration || 0),
-            lessons: data.lessonsArray?.length || data.lessons || 0,
+            lessons: data.lessonsArray?.filter((l: any) => !l.isTrashed).length ?? data.lessons ?? 0,
             price: this.formatPrice(data.price, data.currency),
             image: data.thumbnail || 'images/article-1.jpg',
             description: data.description,
             features: data.features || []
           };
 
-          this.curriculum = (data.lessonsArray || []).map((l: any) => ({
-            id: l._id,
-            title: l.title,
-            duration: this.formatDuration(l.duration),
-            isLocked: !l.isFreePreview
-          }));
+          this.curriculum = (data.lessonsArray || [])
+            .filter((l: any) => !l.isTrashed)
+            .map((l: any) => ({
+              id: l._id,
+              title: l.title,
+              duration: this.formatDuration(l.duration),
+              isLocked: !l.isFreePreview
+            }));
 
           this.testimonials = (data.testimonials || []).map((t: any) => ({
             author: t.author,
