@@ -31,6 +31,11 @@ export class AdminCourseEditComponent implements OnInit {
   // Delete Confirmation Modal State
   showDeleteModal = false;
   itemToDeleteIndex: number | null = null;
+
+  // Remove Video Confirmation Modal State
+  showRemoveVideoModal = false;
+  videoToRemoveIndex: number | null = null;
+  isRemovingVideo = false;
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -142,6 +147,11 @@ export class AdminCourseEditComponent implements OnInit {
           this.curriculum.removeAt(index);
           this.itemToDeleteIndex = null;
           this.cdr.detectChanges();
+        } else {
+          lessonGroup.patchValue({ isDeleting: false });
+          this.itemToDeleteIndex = null;
+          this.toastService.error(res.message || 'Failed to delete lesson. Please try again.');
+          this.cdr.detectChanges();
         }
       },
       error: (err) => {
@@ -149,6 +159,7 @@ export class AdminCourseEditComponent implements OnInit {
         this.itemToDeleteIndex = null;
         console.error('Error trashing lesson:', err);
         this.toastService.error('Failed to delete lesson. Please try again.');
+        this.cdr.detectChanges();
       }
     });
   }
@@ -157,6 +168,60 @@ export class AdminCourseEditComponent implements OnInit {
     this.showDeleteModal = false;
     this.itemToDeleteIndex = null;
     this.cdr.detectChanges();
+  }
+
+  // ─── Remove Video Methods ─────────────────────────────────────────────────
+  confirmRemoveVideo(index: number) {
+    this.videoToRemoveIndex = index;
+    this.showRemoveVideoModal = true;
+    this.cdr.detectChanges();
+  }
+
+  cancelRemoveVideo() {
+    this.showRemoveVideoModal = false;
+    this.videoToRemoveIndex = null;
+    this.isRemovingVideo = false;
+    this.cdr.detectChanges();
+  }
+
+  removeVideo() {
+    if (this.videoToRemoveIndex === null) return;
+
+    const index = this.videoToRemoveIndex;
+    const lessonGroup = this.curriculum.at(index) as FormGroup;
+    const bunnyVideoId = lessonGroup.get('bunnyVideoId')?.value;
+
+    if (!bunnyVideoId) {
+      this.cancelRemoveVideo();
+      return;
+    }
+
+    this.isRemovingVideo = true;
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+
+    this.api.delete<any>(`web/admin/course/delete-video/${bunnyVideoId}`, headers).subscribe({
+      next: (res) => {
+        this.isRemovingVideo = false;
+        this.showRemoveVideoModal = false;
+        this.videoToRemoveIndex = null;
+        if (res.success) {
+          lessonGroup.patchValue({ bunnyVideoId: null, file: '' });
+          this.toastService.success(res.message || 'Video removed successfully');
+        } else {
+          this.toastService.error(res.message || 'Could not remove video.');
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.isRemovingVideo = false;
+        this.showRemoveVideoModal = false;
+        this.videoToRemoveIndex = null;
+        console.error('Error removing video:', err);
+        this.toastService.error('Failed to remove video. Please try again.');
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   addTestimonial() {

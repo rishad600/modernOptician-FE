@@ -98,10 +98,16 @@
                   <div class="form-group file-upload-group">
                     <div class="label-with-action">
                       <label>Resource (Video/Doc)</label>
-                      <button type="button" class="btn-play-preview-link" *ngIf="item.get('_id')?.value" (click)="previewLesson(i)" title="Preview Video">
-                        <i class="icon-play-sm"></i>
-                        <span>Watch Preview</span>
-                      </button>
+                      <div class="video-label-actions">
+                        <button type="button" class="btn-play-preview-link" *ngIf="item.get('_id')?.value" (click)="previewLesson(i)" title="Preview Video">
+                          <i class="icon-play-sm"></i>
+                          <span>Watch Preview</span>
+                        </button>
+                        <button type="button" class="btn-remove-video" *ngIf="item.get('bunnyVideoId')?.value" (click)="confirmRemoveVideo(i)" title="Remove Video">
+                          <i class="icon-trash"></i>
+                          <span>Remove Video</span>
+                        </button>
+                      </div>
                     </div>
                     <div class="file-upload-wrapper">
                       <input type="text" formControlName="file" placeholder="Upload file or enter URL" class="file-path-input">
@@ -111,7 +117,14 @@
                       </button>
                       <input #fileInput type="file" (change)="onFileSelected($event, i)" style="display: none">
                     </div>
+
                   </div>
+                    <div class="item-status" *ngIf="item.get('_id')?.value && !item.get('isUploading')?.value && !(item.get('uploadProgress')?.value > 0 && item.get('uploadProgress')?.value < 100)">
+                      <span class="badge-success" *ngIf="!item.get('videoStatus')?.value || item.get('videoStatus')?.value === 'Finished' || item.get('videoStatus')?.value === 'ResolutionFinished'">Saved to Course</span>
+                      <span class="badge-warning" *ngIf="item.get('videoStatus')?.value === 'Queued'">Preparing...</span>
+                      <span class="badge-info" *ngIf="item.get('videoStatus')?.value === 'Processing' || item.get('videoStatus')?.value === 'Encoding'">Processing...</span>
+                      <span class="badge-danger" *ngIf="item.get('videoStatus')?.value === 'Failed'">Upload Failed</span>
+                    </div>
                 </div>
 
                 <div class="item-actions" *ngIf="isEditMode && !item.get('_id')?.value">
@@ -131,12 +144,6 @@
                   </div>
                 </div>
 
-                <div class="item-status" *ngIf="item.get('_id')?.value && !item.get('isUploading')?.value && !(item.get('uploadProgress')?.value > 0 && item.get('uploadProgress')?.value < 100)">
-                  <span class="badge-success" *ngIf="!item.get('videoStatus')?.value || item.get('videoStatus')?.value === 'Finished' || item.get('videoStatus')?.value === 'ResolutionFinished'">Saved to Course</span>
-                  <span class="badge-warning" *ngIf="item.get('videoStatus')?.value === 'Queued'">Preparing...</span>
-                  <span class="badge-info" *ngIf="item.get('videoStatus')?.value === 'Processing' || item.get('videoStatus')?.value === 'Encoding'">Processing...</span>
-                  <span class="badge-danger" *ngIf="item.get('videoStatus')?.value === 'Failed'">Upload Failed</span>
-                </div>
               </div>
 
               <div class="curriculum-item-actions">
@@ -310,4 +317,30 @@
       </div>
     </div>
   </div>
+
+  <!-- Remove Video Confirmation Modal -->
+  <div class="modal-overlay" *ngIf="showRemoveVideoModal" (click)="cancelRemoveVideo()">
+    <div class="modal-container confirm-modal" (click)="$event.stopPropagation()">
+      <button type="button" class="modal-close-small" (click)="cancelRemoveVideo()">&times;</button>
+
+      <div class="confirm-modal__icon">
+        <i class="icon-warning"></i>
+      </div>
+
+      <div class="confirm-modal__content">
+        <h3 class="confirm-modal__title">Remove Video?</h3>
+        <p class="confirm-modal__text">
+          This will permanently delete the video from storage. The lesson will remain but its video will be gone.
+        </p>
+      </div>
+
+      <div class="confirm-modal__footer">
+        <button type="button" class="btn-confirm-cancel" (click)="cancelRemoveVideo()">Cancel</button>
+        <button type="button" class="btn-confirm-delete" [disabled]="isRemovingVideo" (click)="removeVideo()">
+          {{ isRemovingVideo ? 'Removing...' : 'Yes, Remove' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>
