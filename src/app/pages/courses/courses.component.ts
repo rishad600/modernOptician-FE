@@ -1,16 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CourseCardComponent } from '../../shared/components/course-card/course-card.component';
-
-interface Course {
-  id: string;
-  title: string;
-  price: string;
-  features: string[];
-  image: string;
-  category: 'clinical' | 'business' | 'technical';
-  date: string;
-}
+import { ApiService } from '../../core/services/api.service';
+import { catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-courses',
@@ -20,70 +12,56 @@ interface Course {
   styleUrl: './courses.component.scss'
 })
 export class CoursesComponent implements OnInit {
-  allCourses: Course[] = [
-    {
-      id: 'basic-optics',
-      title: 'Basic Optical Science',
-      price: '$80.00',
-      features: ['4 Video Chapters', 'Lens Physics & Optics', 'Frame Selection Basics', 'Lifetime Access'],
-      image: 'images/article-1.jpg',
-      category: 'technical',
-      date: '2024-03-10'
-    },
-    {
-      id: 'clinical-procedures',
-      title: 'Clinical Procedures',
-      price: '$80.00',
-      features: ['5 Video Chapters', 'Exam Techniques', 'Diagnosis Basics', 'Lifetime Access'],
-      image: 'images/article-1.jpg',
-      category: 'clinical',
-      date: '2024-03-12'
-    },
-    {
-      id: 'contact-lens',
-      title: 'Contact Lens Theory',
-      price: '$80.00',
-      features: ['4 Video Chapters', 'Material Science', 'Fitting Guides', 'Lifetime Access'],
-      image: 'images/FeatureCard-Image2.jpg',
-      category: 'clinical',
-      date: '2024-03-15'
-    },
-    {
-      id: 'modern-tech',
-      title: 'Modern Lens Tech',
-      price: '$80.00',
-      features: ['4 Video Chapters', 'Digital Surfacing', 'Coating Technology', 'Lifetime Access'],
-      image: 'images/FeatureCard-Image1.jpg',
-      category: 'technical',
-      date: '2024-03-14'
-    },
-    {
-      id: 'optical-mgmt',
-      title: 'Optical Business Mgmt',
-      price: '$95.00',
-      features: ['6 Video Chapters', 'Inventory Control', 'Sales Strategies', 'Lifetime Access'],
-      image: 'images/FeatureCard-Image3.jpg',
-      category: 'business',
-      date: '2024-03-18'
-    },
-    {
-      id: 'patient-comm',
-      title: 'Patient Communication',
-      price: '$75.00',
-      features: ['3 Video Chapters', 'Soft Skills', 'Conflict Resolution', 'Lifetime Access'],
-      image: 'images/Hero Image.jpg',
-      category: 'business',
-      date: '2024-03-20'
-    }
-  ];
 
-  filteredCourses: Course[] = [];
+  allCourses: any[] = [];
+  filteredCourses: any[] = [];
+
   selectedCategory: string = 'all';
   searchQuery: string = '';
   selectedSort: string = 'latest';
 
+  isLoading = true;
+  error: string | null = null;
+
+  constructor(
+    private api: ApiService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
   ngOnInit() {
-    this.filteredCourses = [...this.allCourses];
+    this.fetchCourses();
+  }
+
+  fetchCourses() {
+    this.isLoading = true;
+    this.error = null;
+
+    this.api.get<any>('web/public/course').pipe(
+      catchError(err => {
+        this.isLoading = false;
+        this.error = 'Failed to load courses. Please try again later.';
+        this.cdr.detectChanges();
+        return throwError(() => err);
+      })
+    ).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        if (res.success && Array.isArray(res.data)) {
+          this.allCourses = res.data.map((c: any) => ({
+            id: c._id,
+            title: c.name,
+            price: this.formatPrice(c.price, c.currency),
+            rawPrice: c.price,
+            features: c.features || [],
+            image: c.thumbnail || 'images/course-placeholder.jpg',
+            category: (c.category || '').toLowerCase(),
+            createdAt: c.createdAt || ''
+          }));
+          this.applyFilters();
+        }
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   filterByCategory(category: string) {
@@ -108,18 +86,27 @@ export class CoursesComponent implements OnInit {
       return matchesCategory && matchesSearch;
     });
 
-    // Apply Sorting
     this.filteredCourses = filtered.sort((a, b) => {
       switch (this.selectedSort) {
         case 'latest':
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         case 'price-low':
-          return parseFloat(a.price.replace('$', '')) - parseFloat(b.price.replace('$', ''));
+          return a.rawPrice - b.rawPrice;
         case 'price-high':
-          return parseFloat(b.price.replace('$', '')) - parseFloat(a.price.replace('$', ''));
+          return b.rawPrice - a.rawPrice;
         default:
           return 0;
       }
     });
+  }
+
+  private formatPrice(price: any, currency: string): string {
+    const amount = parseFloat(price);
+    if (isNaN(amount)) return String(price);
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency || 'USD',
+      minimumFractionDigits: 2
+    }).format(amount);
   }
 }

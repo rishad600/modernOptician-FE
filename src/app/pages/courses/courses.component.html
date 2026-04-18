@@ -39,26 +39,42 @@
   <!-- 3. Listing Section -->
   <section class="listing-section">
     <div class="container">
-      <div class="results-info" *ngIf="filteredCourses.length > 0">
-        Showing {{ filteredCourses.length }} courses
+
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading courses...</p>
       </div>
 
-      <div class="courses-grid" *ngIf="filteredCourses.length > 0">
-        <app-course-card 
-          *ngFor="let course of filteredCourses" 
-          [plan]="course"
-        ></app-course-card>
+      <!-- Error State -->
+      <div class="error-state" *ngIf="error && !isLoading">
+        <p>{{ error }}</p>
+        <button class="btn-outline" (click)="fetchCourses()">Try Again</button>
       </div>
 
-      <!-- No Results State -->
-      <div class="no-results" *ngIf="filteredCourses.length === 0">
-        <div class="no-results__content">
-          <img src="C:\Users\Rishad\.gemini\antigravity\brain\52285414-06b5-466b-b03f-c9b462696e47\no_results_illustration_1773166835323.png" alt="No courses found" class="no-results__img">
-          <h3>No courses found</h3>
-          <p>We couldn't find any courses matching your search or filter. Try a different keyword or category.</p>
-          <button class="btn-outline" (click)="filterByCategory('all')">View All Courses</button>
+      <!-- Results -->
+      <ng-container *ngIf="!isLoading && !error">
+        <div class="results-info" *ngIf="filteredCourses.length > 0">
+          Showing {{ filteredCourses.length }} course{{ filteredCourses.length !== 1 ? 's' : '' }}
         </div>
-      </div>
+
+        <div class="courses-grid" *ngIf="filteredCourses.length > 0">
+          <app-course-card 
+            *ngFor="let course of filteredCourses" 
+            [plan]="course"
+          ></app-course-card>
+        </div>
+
+        <!-- No Results State -->
+        <div class="no-results" *ngIf="filteredCourses.length === 0">
+          <div class="no-results__content">
+            <h3>No courses found</h3>
+            <p>We couldn't find any courses matching your search or filter. Try a different keyword or category.</p>
+            <button class="btn-outline" (click)="filterByCategory('all')">View All Courses</button>
+          </div>
+        </div>
+      </ng-container>
+
     </div>
   </section>
 </div>
