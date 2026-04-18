@@ -18,7 +18,7 @@
       (click)="isMobileMenuOpen = false" class="dashboard__mobile-nav-item">
       <span>{{ item.label }}</span>
     </a>
-    <a routerLink="/auth/login" class="dashboard__mobile-nav-item logout" (click)="logout()">Logout</a>
+    <a class="dashboard__mobile-nav-item logout" style="cursor:pointer" (click)="confirmLogout()">Logout</a>
   </nav>
 
   <aside class="dashboard__sidebar">
@@ -39,7 +39,7 @@
         <i class="icon-{{item.icon}}"></i>
         <span>{{ item.label }}</span>
       </a>
-      <a routerLink="/auth/login" class="dashboard__nav-item logout" (click)="logout()">
+      <a class="dashboard__nav-item logout" style="cursor:pointer" (click)="confirmLogout()">
         <i class="icon-logout"></i>
         <span>Logout</span>
       </a>
@@ -49,4 +49,19 @@
   <main class="dashboard__content">
     <router-outlet></router-outlet>
   </main>
+
+  <!-- Logout Confirmation Dialog -->
+  <div class="logout-overlay" *ngIf="showLogoutDialog" (click)="cancelLogout()">
+    <div class="logout-dialog" (click)="$event.stopPropagation()">
+      <div class="logout-dialog__icon">
+        <i class="icon-logout"></i>
+      </div>
+      <h2 class="logout-dialog__title">Sign Out?</h2>
+      <p class="logout-dialog__message">You'll be signed out of your session. Any unsaved changes will be lost.</p>
+      <div class="logout-dialog__actions">
+        <button class="btn-cancel" (click)="cancelLogout()">Cancel</button>
+        <button class="btn-confirm" (click)="logout()">Yes, Sign Out</button>
+      </div>
+    </div>
+  </div>
 </div>

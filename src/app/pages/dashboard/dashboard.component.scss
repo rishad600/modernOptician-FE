@@ -253,3 +253,103 @@
 .icon-logout {
   mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>');
 }
+
+// ─── Logout Confirmation Dialog ────────────────────────────────────────────
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUpDialog {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+.logout-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeInOverlay 0.2s ease;
+}
+
+.logout-dialog {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2.5rem 2rem 2rem;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  animation: slideUpDialog 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+    background: #fef2f2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+
+    .icon-logout {
+      width: 28px;
+      height: 28px;
+      background-color: #ef4444;
+    }
+  }
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 0.5rem;
+  }
+
+  &__message {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0 0 2rem;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.75rem;
+
+    button {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+  }
+}
+
+.btn-cancel {
+  background: #f1f5f9;
+  color: #475569;
+
+  &:hover {
+    background: #e2e8f0;
+  }
+}
+
+.btn-confirm {
+  background: #ef4444;
+  color: #fff;
+
+  &:hover {
+    background: #dc2626;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+  }
+}

@@ -13,6 +13,7 @@ export class AdminLayoutComponent {
   adminName = 'Admin';
   adminEmail = 'admin@modernoptician.com';
   isMobileMenuOpen = false;
+  showLogoutDialog = false;
 
   navItems = [
     { label: 'Dashboard', route: '/admin/dashboard', icon: 'dashboard' },
@@ -24,7 +25,17 @@ export class AdminLayoutComponent {
 
   constructor(private router: Router) {}
 
+  confirmLogout() {
+    this.isMobileMenuOpen = false;
+    this.showLogoutDialog = true;
+  }
+
+  cancelLogout() {
+    this.showLogoutDialog = false;
+  }
+
   logout() {
+    this.showLogoutDialog = false;
     localStorage.clear();
     this.router.navigate(['/auth/admin-login']);
   }

@@ -11,6 +11,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/rou
 })
 export class DashboardComponent implements OnInit {
   isMobileMenuOpen = false;
+  showLogoutDialog = false;
   user = {
     name: '',
     email: '',
@@ -40,7 +41,17 @@ export class DashboardComponent implements OnInit {
     return this.user.name.charAt(0).toUpperCase();
   }
 
+  confirmLogout() {
+    this.isMobileMenuOpen = false;
+    this.showLogoutDialog = true;
+  }
+
+  cancelLogout() {
+    this.showLogoutDialog = false;
+  }
+
   logout() {
+    this.showLogoutDialog = false;
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('token');
       localStorage.removeItem('_id');
