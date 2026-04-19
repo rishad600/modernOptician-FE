@@ -776,3 +776,56 @@
     transform: scale(1) translateY(0);
   }
 }
+
+// --- Enrolled State Styles ---
+
+.btn-primary {
+  &.enrolled {
+    background: #10B981;
+    cursor: default;
+
+    &:hover {
+      background: #10B981;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .spinner-sm {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+.course-sidebar__price-group {
+  .one-time.enrolled {
+    color: #10B981;
+    font-weight: 600;
+    opacity: 1;
+  }
+
+  .one-time.admin-badge {
+    color: #f59e0b;
+    font-weight: 600;
+    opacity: 1;
+  }
+}
+
+// --- Admin Button Styles ---
+
+.btn-primary.admin-btn {
+  background: #0A225C;
+
+  &:hover {
+    background: #1a3368;
+  }
+}

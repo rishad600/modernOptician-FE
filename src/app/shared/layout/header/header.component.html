@@ -18,7 +18,9 @@
         <a routerLink="/blog" routerLinkActive="active" (click)="closeMenu()" class="header__link">Blog</a>
         <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()" class="header__link">Contact</a>
       </div>
-      <button class="header__btn btn-primary" routerLink="/auth/signup" (click)="closeMenu()">Sign Up</button>
+      <button class="header__btn btn-primary" [routerLink]="isLoggedIn ? getDashboardLink() : '/auth/signup'" (click)="closeMenu()">
+        {{ isLoggedIn ? 'Dashboard' : 'Sign Up' }}
+      </button>
     </nav>
   </div>
 </header>

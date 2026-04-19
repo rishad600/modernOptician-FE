@@ -1,6 +1,7 @@
 <div class="course-card" [routerLink]="['/course', plan.id]">
   <div class="course-card__image">
     <img [src]="plan.image" [alt]="plan.title">
+    <span class="course-card__badge" *ngIf="plan.isEnrolled">Enrolled</span>
   </div>
   <div class="course-card__content">
     <h3 class="course-card__title">{{ plan.title }}</h3>
@@ -12,6 +13,8 @@
         {{ feature }}
       </li>
     </ul>
-    <button class="course-card__btn" [routerLink]="['/course', plan.id]">View Details</button>
+    <button class="course-card__btn" [class.enrolled]="plan.isEnrolled" [routerLink]="['/course', plan.id]">
+      {{ plan.isEnrolled ? 'Continue' : 'View Details' }}
+    </button>
   </div>
 </div>

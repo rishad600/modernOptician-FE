@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
+import { ToastService } from '../../core/services/toast.service';
 import { HttpParams } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 
@@ -24,15 +25,20 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
     duration: '',
     lessons: 0,
     price: '',
+    rawPrice: 0,
     image: 'images/course-placeholder.jpg',
     description: '',
-    features: []
+    features: [],
+    isEnrolled: false
   };
 
   curriculum: any[] = [];
   testimonials: any[] = [];
   isLoading = true;
   error: string | null = null;
+
+  // Purchase State
+  isPurchasing = false;
 
   // Video Preview State
   showVideoModal = false;
@@ -51,7 +57,8 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private api: ApiService,
     private cdr: ChangeDetectorRef,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private toast: ToastService
   ) { }
 
   ngOnInit(): void {
@@ -64,7 +71,22 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
 
   fetchCourseDetails(id: string) {
     this.isLoading = true;
-    this.api.get<any>(`web/public/course/${id}`, new HttpParams()).pipe(
+
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role') || ''; // Handle null/empty
+
+    // Determine endpoint based on role
+    let endpoint: string;
+    if (role === 'admin') {
+      endpoint = `web/admin/course/${id}`;
+    } else if (token && role === 'user') {
+      endpoint = `web/user/course/${id}`;
+    } else {
+      // Empty role, guest, or other = use public API
+      endpoint = `web/public/course/${id}`;
+    }
+
+    this.api.get<any>(endpoint, new HttpParams()).pipe(
       catchError(err => {
         this.isLoading = false;
         this.error = 'Failed to load course details. Please try again later.';
@@ -76,24 +98,34 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         if (res.success && res.data) {
           const data = res.data;
+          const isAdmin = role === 'admin';
+          const isUser = role === 'user';
+          const isPublic = !isAdmin && !isUser; // Empty role or other
+
           this.course = {
             title: data.name,
             instructor: data.instructorName || 'Dr. Sarah Mitchell',
             duration: this.formatMinutes(data.totalDuration || 0),
             lessons: data.lessonsArray?.filter((l: any) => !l.isTrashed).length ?? data.lessons ?? 0,
             price: this.formatPrice(data.price, data.currency),
+            rawPrice: data.price,
             image: data.thumbnail || 'images/article-1.jpg',
             description: data.description,
-            features: data.features || []
+            features: data.features || [],
+            isEnrolled: isAdmin ? true : (data.isEnrolled || false), // Admin sees as enrolled
+            isAdmin: isAdmin, // Flag to show admin view
+            isPublic: isPublic // Flag to show public view (empty role)
           };
 
           this.curriculum = (data.lessonsArray || [])
-            .filter((l: any) => !l.isTrashed)
+            .filter((l: any) => !l.isTrashed && l.isPublished) // Only show published lessons
             .map((l: any) => ({
               id: l._id,
               title: l.title,
               duration: this.formatDuration(l.duration),
-              isLocked: !l.isFreePreview
+              isLocked: isAdmin ? false : (!l.isFreePreview && !this.course.isEnrolled), // Admin sees all unlocked
+              isFreePreview: l.isFreePreview || false,
+              bunnyVideoId: l.bunnyVideoId || null // For public video access check
             }));
 
           this.testimonials = (data.testimonials || []).map((t: any) => ({
@@ -146,28 +178,101 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
     }, 3000);
   }
 
+  // --- Purchase Logic ---
+
+  purchaseCourse(): void {
+    if (!this.courseId || this.isPurchasing || this.course.isEnrolled) return;
+
+    // Check if user is authenticated
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.toast.info('Please log in to purchase this course');
+      this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+
+    this.isPurchasing = true;
+    this.cdr.detectChanges();
+
+    this.api.post<any>(`web/user/course/purchase/${this.courseId}`).subscribe({
+      next: (res) => {
+        this.isPurchasing = false;
+        if (res.success) {
+          this.toast.success('Course purchased successfully!');
+          this.course.isEnrolled = true;
+          // Unlock all lessons
+          this.curriculum = this.curriculum.map(l => ({
+            ...l,
+            isLocked: !l.isFreePreview
+          }));
+        } else {
+          this.toast.error(res.message || 'Failed to purchase course');
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.isPurchasing = false;
+        const message = err?.message || 'Error occurred while purchasing course.';
+        this.toast.error(message);
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   // --- Video Preview Logic ---
 
   watchPreview(): void {
     // Find the first free preview lesson
-    const firstFreeLesson = this.curriculum.find(item => !item.isLocked);
+    const firstFreeLesson = this.curriculum.find(item => item.isFreePreview);
     if (firstFreeLesson) {
       this.playLesson(firstFreeLesson.id);
     } else {
-      // Potentially show a message that no preview is available
-      console.log('No free preview lessons available for this course.');
+      this.toast.info('No free preview available for this course');
     }
   }
 
   playLesson(lessonId: string): void {
     if (this.isFetchingVideo) return;
 
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role') || ''; // Handle null/empty
+    const isAdmin = role === 'admin';
+    const isUser = role === 'user';
+    const isPublic = !token || (!isAdmin && !isUser); // No token or empty role
+
+    const lesson = this.curriculum.find(l => l.id === lessonId);
+    if (!lesson) return;
+
+    // For public users: check if lesson is accessible (free preview or has video)
+    if (isPublic && lesson.isLocked && !lesson.bunnyVideoId) {
+      this.toast.info('Please log in to watch this lesson');
+      this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+
+    // For logged in users: check if lesson is locked and not admin
+    if (!isPublic && lesson.isLocked && !isAdmin) {
+      this.toast.info('Please purchase the course to access this lesson');
+      return;
+    }
+
     this.isFetchingVideo = true;
     this.videoError = null;
     this.showVideoModal = true;
     this.safeVideoUrl = null;
 
-    this.api.get<any>(`web/public/course/play/${lessonId}`).subscribe({
+    // Use appropriate API endpoint based on role
+    let endpoint: string;
+    if (isAdmin) {
+      endpoint = `web/admin/course/play/${lessonId}`;
+    } else if (isUser) {
+      endpoint = `web/user/course/play-video/${lessonId}`;
+    } else {
+      // Public user (no token or empty role) = use public play API
+      endpoint = `web/public/course/play/${lessonId}`;
+    }
+
+    this.api.get<any>(endpoint).subscribe({
       next: (res) => {
         this.isFetchingVideo = false;
         if (res.success && res.data?.playUrl) {
@@ -179,7 +284,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.isFetchingVideo = false;
-        this.videoError = err.message || 'Error occurred while fetching video.';
+        this.videoError = err?.message || 'Error occurred while fetching video.';
         this.cdr.detectChanges();
       }
     });

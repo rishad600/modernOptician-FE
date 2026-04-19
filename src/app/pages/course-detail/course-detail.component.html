@@ -18,7 +18,14 @@
     <nav class="breadcrumbs">
       <a routerLink="/">Home</a>
       <span class="separator">/</span>
-      <a routerLink="/courses">Courses</a>
+      <ng-container *ngIf="course.isAdmin">
+        <a routerLink="/admin/dashboard">Admin</a>
+        <span class="separator">/</span>
+        <a routerLink="/admin/courses">Courses</a>
+      </ng-container>
+      <ng-container *ngIf="!course.isAdmin">
+        <a routerLink="/courses">Courses</a>
+      </ng-container>
       <span class="separator">/</span>
       <span class="current">{{ course.title }}</span>
     </nav>
@@ -52,13 +59,48 @@
 
         <aside class="course-sidebar">
           <div class="course-sidebar__card">
-            <div class="course-sidebar__price-group">
-              <span class="price">{{ course.price }}</span>
-              <span class="one-time">One-time payment</span>
-            </div>
-            
-            <button class="btn-primary full-width">ENROLL NOW</button>
-            
+            <!-- Admin View -->
+            <ng-container *ngIf="course.isAdmin">
+              <div class="course-sidebar__price-group">
+                <span class="price">{{ course.price }}</span>
+                <span class="one-time admin-badge">Admin View</span>
+              </div>
+
+              <button class="btn-primary full-width admin-btn" [routerLink]="['/admin/courses/edit', courseId]">
+                Edit Course
+              </button>
+            </ng-container>
+
+            <!-- Public User (empty role) View -->
+            <ng-container *ngIf="!course.isAdmin && course.isPublic">
+              <div class="course-sidebar__price-group">
+                <span class="price">{{ course.price }}</span>
+                <span class="one-time">One-time payment</span>
+              </div>
+
+              <button class="btn-primary full-width" routerLink="/auth/login">
+                Login to Purchase
+              </button>
+            </ng-container>
+
+            <!-- User (role=user) View -->
+            <ng-container *ngIf="!course.isAdmin && !course.isPublic">
+              <div class="course-sidebar__price-group">
+                <span class="price">{{ course.price }}</span>
+                <span class="one-time" *ngIf="!course.isEnrolled">One-time payment</span>
+                <span class="one-time enrolled" *ngIf="course.isEnrolled">You are enrolled</span>
+              </div>
+
+              <button
+                class="btn-primary full-width"
+                [class.enrolled]="course.isEnrolled"
+                (click)="!course.isEnrolled && purchaseCourse()"
+                [disabled]="isPurchasing">
+                <span *ngIf="isPurchasing" class="spinner-sm"></span>
+                <span *ngIf="!isPurchasing">{{ course.isEnrolled ? 'ENROLLED ✓' : 'ENROLL NOW' }}</span>
+              </button>
+            </ng-container>
+
             <div class="course-sidebar__features" *ngIf="course.features && course.features.length > 0">
               <h4 class="features-title">This course includes:</h4>
               <ul>

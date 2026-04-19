@@ -36,7 +36,10 @@ export class CoursesComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    this.api.get<any>('web/public/course').pipe(
+    const token = localStorage.getItem('token');
+    const endpoint = token ? 'web/user/course' : 'web/public/course';
+
+    this.api.get<any>(endpoint).pipe(
       catchError(err => {
         this.isLoading = false;
         this.error = 'Failed to load courses. Please try again later.';
@@ -55,7 +58,8 @@ export class CoursesComponent implements OnInit {
             features: c.features || [],
             image: c.thumbnail || 'images/course-placeholder.jpg',
             category: (c.category || '').toLowerCase(),
-            createdAt: c.createdAt || ''
+            createdAt: c.createdAt || '',
+            isEnrolled: c.isEnrolled || false
           }));
           this.applyFilters();
         }
