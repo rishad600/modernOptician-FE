@@ -248,17 +248,17 @@
         <div class="form-section thumbnail-section">
           <h2 class="section-title">Course Thumbnail</h2>
           <div class="thumbnail-preview">
-            <img [src]="courseForm.get('image')?.value" alt="Preview">
+            <img [src]="thumbnailPreview || 'images/course-placeholder.jpg'" alt="Preview">
             <div class="upload-overlay">
               <button type="button" class="btn-secondary small" (click)="thumbInput.click()">Change Image</button>
             </div>
             <input #thumbInput type="file" (change)="onThumbnailSelected($event)" style="display: none" accept="image/*">
           </div>
 
-          <div class="form-group" style="margin-top: 1.5rem;">
+          <!-- <div class="form-group" style="margin-top: 1.5rem;">
             <label for="thumbnailUrl">Thumbnail URL</label>
             <input id="thumbnailUrl" type="text" formControlName="image" placeholder="https://example.com/image.jpg">
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

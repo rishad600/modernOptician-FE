@@ -33,8 +33,14 @@ export class ApiService {
 
     put<T>(path: string, body: any = {}, headers: HttpHeaders = new HttpHeaders()): Observable<T> {
         let authHeaders = this.getAuthHeaders(headers);
-        authHeaders = authHeaders.has('Content-Type') ? authHeaders : authHeaders.set('Content-Type', 'application/json');
-        const finalBody = authHeaders.get('Content-Type') === 'application/json' ? JSON.stringify(body) : body;
+        const isFormData = body instanceof FormData;
+        
+        if (!isFormData) {
+            authHeaders = authHeaders.has('Content-Type') ? authHeaders : authHeaders.set('Content-Type', 'application/json');
+        }
+
+        const finalBody = (authHeaders.get('Content-Type') === 'application/json' && !isFormData) ? JSON.stringify(body) : body;
+        
         return this.http.put<T>(this.getFullUrl(path), finalBody, {
             headers: authHeaders
         }).pipe(catchError(this.formatErrors));
@@ -42,8 +48,14 @@ export class ApiService {
 
     patch<T>(path: string, body: any = {}, headers: HttpHeaders = new HttpHeaders()): Observable<T> {
         let authHeaders = this.getAuthHeaders(headers);
-        authHeaders = authHeaders.has('Content-Type') ? authHeaders : authHeaders.set('Content-Type', 'application/json');
-        const finalBody = authHeaders.get('Content-Type') === 'application/json' ? JSON.stringify(body) : body;
+        const isFormData = body instanceof FormData;
+
+        if (!isFormData) {
+            authHeaders = authHeaders.has('Content-Type') ? authHeaders : authHeaders.set('Content-Type', 'application/json');
+        }
+
+        const finalBody = (authHeaders.get('Content-Type') === 'application/json' && !isFormData) ? JSON.stringify(body) : body;
+
         return this.http.patch<T>(this.getFullUrl(path), finalBody, {
             headers: authHeaders
         }).pipe(catchError(this.formatErrors));
@@ -51,8 +63,14 @@ export class ApiService {
 
     post<T>(path: string, body: any = {}, headers: HttpHeaders = new HttpHeaders()): Observable<T> {
         let authHeaders = this.getAuthHeaders(headers);
-        authHeaders = authHeaders.has('Content-Type') ? authHeaders : authHeaders.set('Content-Type', 'application/json');
-        const finalBody = authHeaders.get('Content-Type') === 'application/json' ? JSON.stringify(body) : body;
+        const isFormData = body instanceof FormData;
+
+        if (!isFormData) {
+            authHeaders = authHeaders.has('Content-Type') ? authHeaders : authHeaders.set('Content-Type', 'application/json');
+        }
+
+        const finalBody = (authHeaders.get('Content-Type') === 'application/json' && !isFormData) ? JSON.stringify(body) : body;
+
         return this.http.post<T>(this.getFullUrl(path), finalBody, {
             headers: authHeaders
         }).pipe(catchError(this.formatErrors));

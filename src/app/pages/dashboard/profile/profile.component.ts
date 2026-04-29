@@ -29,6 +29,8 @@ export class ProfileComponent implements OnInit {
   passwordSuccess: string | null = null;
   profileError: string | null = null;
   profileSuccess: string | null = null;
+  selectedAvatarFile: File | null = null;
+  avatarPreview: string | null = null;
 
   private apiUrl = environment.apiUrl;
 
@@ -58,7 +60,8 @@ export class ProfileComponent implements OnInit {
           this.user.lastName = profile.lastName || '';
           this.user.email = profile.email || '';
           this.user.phone = profile.phone || '';
-          // Avatar or bio can be mapped here later if needed
+          this.user.avatar = profile.avatar || '';
+          this.avatarPreview = profile.avatar || '';
         }
         this.cdr.detectChanges();
       },
@@ -102,25 +105,45 @@ export class ProfileComponent implements OnInit {
     return `${this.user.firstName.charAt(0)}${this.user.lastName.charAt(0)}`.toUpperCase();
   }
 
+  onAvatarSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedAvatarFile = file;
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.avatarPreview = e.target.result;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   saveProfile() {
     this.profileError = null;
     this.profileSuccess = null;
 
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
 
-    const body = {
-      name: this.user.firstName,
-      lastName: this.user.lastName,
-      phone: this.user.phone
-    };
+    const formData = new FormData();
+    formData.append('name', this.user.firstName);
+    formData.append('lastName', this.user.lastName);
+    formData.append('phone', this.user.phone);
 
-    this.http.put(`${this.apiUrl}/web/user/profile`, body, { headers }).subscribe({
+    if (this.selectedAvatarFile) {
+      formData.append('avatar', this.selectedAvatarFile);
+    }
+
+    this.http.put(`${this.apiUrl}/web/user/profile`, formData, { headers }).subscribe({
       next: (response: any) => {
         this.profileSuccess = response.message || 'Profile updated successfully!';
+        if (response.data?.avatar) {
+          this.user.avatar = response.data.avatar;
+          this.avatarPreview = response.data.avatar;
+        }
+        this.selectedAvatarFile = null;
         this.cdr.detectChanges();
       },
       error: (error) => {

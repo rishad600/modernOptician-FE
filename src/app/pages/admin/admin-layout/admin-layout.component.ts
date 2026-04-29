@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 
@@ -9,9 +9,10 @@ import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/rou
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.scss'
 })
-export class AdminLayoutComponent {
+export class AdminLayoutComponent implements OnInit {
   adminName = 'Admin';
   adminEmail = 'admin@modernoptician.com';
+  adminAvatar: string | null = null;
   isMobileMenuOpen = false;
   showLogoutDialog = false;
 
@@ -24,6 +25,16 @@ export class AdminLayoutComponent {
   ];
 
   constructor(private router: Router) {}
+  
+  ngOnInit() {
+    this.loadAdminData();
+  }
+
+  loadAdminData() {
+    this.adminName = localStorage.getItem('name') || 'Admin';
+    this.adminEmail = localStorage.getItem('email') || 'admin@modernoptician.com';
+    this.adminAvatar = localStorage.getItem('avatar');
+  }
 
   confirmLogout() {
     this.isMobileMenuOpen = false;

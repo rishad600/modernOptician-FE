@@ -2,7 +2,10 @@
   <!-- Mobile Header -->
   <header class="dashboard__mobile-header">
     <div class="dashboard__mobile-user">
-      <div class="avatar-placeholder small">A</div>
+      <div class="dashboard__avatar small">
+        <img *ngIf="adminAvatar" [src]="adminAvatar" [alt]="adminName">
+        <div *ngIf="!adminAvatar" class="avatar-placeholder small">{{ adminName.charAt(0) }}</div>
+      </div>
       <span>{{ adminName }}</span>
     </div>
     <button class="dashboard__mobile-toggle" (click)="isMobileMenuOpen = !isMobileMenuOpen" [class.is-open]="isMobileMenuOpen">
@@ -28,7 +31,8 @@
   <aside class="dashboard__sidebar">
     <div class="dashboard__user">
       <div class="dashboard__avatar">
-        <div class="avatar-placeholder">A</div>
+        <img *ngIf="adminAvatar" [src]="adminAvatar" [alt]="adminName">
+        <div *ngIf="!adminAvatar" class="avatar-placeholder">{{ adminName.charAt(0) }}</div>
       </div>
       <div class="dashboard__user-info">
         <h3>{{ adminName }}</h3>

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../../core/services/api.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-admin-content-edit',
@@ -17,6 +18,7 @@ export class AdminContentEditComponent implements OnInit {
   isEditMode = false;
   articleId: string | null = null;
   imagePreview: string | null = null;
+  selectedFile: File | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -24,7 +26,8 @@ export class AdminContentEditComponent implements OnInit {
     private router: Router,
     private api: ApiService,
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toastService: ToastService
   ) {
     this.contentForm = this.fb.group({
       contentType: ['Blog Post', Validators.required],
@@ -85,8 +88,13 @@ export class AdminContentEditComponent implements OnInit {
   onImageSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.imagePreview = URL.createObjectURL(file);
-      this.contentForm.patchValue({ image: this.imagePreview });
+      this.selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
     }
   }
 
@@ -98,23 +106,28 @@ export class AdminContentEditComponent implements OnInit {
         'Authorization': `Bearer ${token}`
       });
 
-      // Transform form data to match the required API body structure
-      const payload = {
-        contentType: formValue.contentType,
-        title: formValue.title,
-        excerpt: formValue.excerpt,
-        content: formValue.content,
-        author: formValue.author,
-        publishDate: new Date(formValue.date).toISOString(),
-        aboutAuthor: formValue.authorBio,
-        status: formValue.status,
-        thumbnail: formValue.image || 'https://images.unsplash.com/photo-1541560052-5e137f229371',
-        tags: formValue.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t.length > 0)
-      };
+      const formData = new FormData();
+      formData.append('contentType', formValue.contentType);
+      formData.append('title', formValue.title);
+      formData.append('excerpt', formValue.excerpt);
+      formData.append('content', formValue.content);
+      formData.append('author', formValue.author);
+      formData.append('publishDate', new Date(formValue.date).toISOString());
+      formData.append('aboutAuthor', formValue.authorBio);
+      formData.append('status', formValue.status);
+      
+      const tagsArray = formValue.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t.length > 0);
+      tagsArray.forEach((tag: string) => formData.append('tags[]', tag));
+
+      if (this.selectedFile) {
+        formData.append('thumbnail', this.selectedFile);
+      } else if (formValue.image) {
+        formData.append('thumbnail', formValue.image);
+      }
 
       const request = this.isEditMode
-        ? this.api.put<any>(`web/admin/blog/${this.articleId}`, payload, headers)
-        : this.api.post<any>(`web/admin/blog`, payload, headers);
+        ? this.api.put<any>(`web/admin/blog/${this.articleId}`, formData, headers)
+        : this.api.post<any>(`web/admin/blog`, formData, headers);
 
       request.subscribe({
         next: (res) => {
@@ -124,6 +137,7 @@ export class AdminContentEditComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error saving article:', err);
+          this.toastService.error(err.message || 'Failed to save article. Please try again.');
         }
       });
     } else {

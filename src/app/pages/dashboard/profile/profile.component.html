@@ -33,9 +33,10 @@
   <div id="contact-form" class="profile-card">
     <div class="profile-card__header">
       <div class="avatar-upload">
-        <img *ngIf="user.avatar" [src]="user.avatar" alt="Profile Picture">
-        <div *ngIf="!user.avatar" class="avatar-placeholder">{{ getInitials() }}</div>
-        <button class="btn-change-avatar">Change Photo</button>
+        <img *ngIf="avatarPreview || user.avatar" [src]="avatarPreview || user.avatar" alt="Profile Picture">
+        <div *ngIf="!avatarPreview && !user.avatar" class="avatar-placeholder">{{ getInitials() }}</div>
+        <button type="button" class="btn-change-avatar" (click)="avatarInput.click()">Change Photo</button>
+        <input #avatarInput type="file" (change)="onAvatarSelected($event)" style="display: none" accept="image/*">
       </div>
       <div class="header-text">
         <h2>Personal Information</h2>

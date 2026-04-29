@@ -77,6 +77,9 @@ export class AdminLoginComponent implements OnInit {
             if (response.data.admin) {
               localStorage.setItem('name', response.data.admin.name);
               localStorage.setItem('email', response.data.admin.email);
+              if (response.data.admin.avatar) {
+                localStorage.setItem('avatar', response.data.admin.avatar);
+              }
             }
 
             this.router.navigate(['/admin/dashboard']);

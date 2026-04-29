@@ -36,6 +36,8 @@ export class AdminCourseEditComponent implements OnInit {
   showRemoveVideoModal = false;
   videoToRemoveIndex: number | null = null;
   isRemovingVideo = false;
+  selectedThumbnailFile: File | null = null;
+  thumbnailPreview: string | null = null;
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -282,6 +284,7 @@ export class AdminCourseEditComponent implements OnInit {
             status: data.status || 'Published',
             image: data.thumbnail || 'images/course-placeholder.jpg'
           });
+          this.thumbnailPreview = data.thumbnail || 'images/course-placeholder.jpg';
 
           // Handle Curriculum
           while (this.curriculum.length) { this.curriculum.removeAt(0); }
@@ -350,7 +353,15 @@ export class AdminCourseEditComponent implements OnInit {
   onThumbnailSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.courseForm.patchValue({ image: URL.createObjectURL(file) });
+      this.selectedThumbnailFile = file;
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.thumbnailPreview = e.target.result;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+      // We don't patch the form 'image' field yet, or we can patch it with a dummy string
+      // but the backend will use req.file if present.
     }
   }
 
@@ -371,20 +382,28 @@ export class AdminCourseEditComponent implements OnInit {
         'Authorization': `Bearer ${token}`
       });
 
-      const payload = {
-        name: formValue.title,
-        description: formValue.description,
-        thumbnail: formValue.image || 'https://images.unsplash.com/photo-1574482620826-40685ca5ebe2?auto=format&fit=crop&q=80&w=800',
-        price: parseFloat(formValue.price),
-        category: formValue.category,
-        instructorName: formValue.instructor,
-        status: formValue.status,
-        features: formValue.features
-      };
+      const formData = new FormData();
+      formData.append('name', formValue.title);
+      formData.append('description', formValue.description);
+      formData.append('price', formValue.price);
+      formData.append('category', formValue.category);
+      formData.append('instructorName', formValue.instructor);
+      formData.append('status', formValue.status);
+      
+      // Handle features array
+      if (Array.isArray(formValue.features)) {
+        formValue.features.forEach((f: string) => formData.append('features[]', f));
+      }
+
+      if (this.selectedThumbnailFile) {
+        formData.append('thumbnail', this.selectedThumbnailFile);
+      } else if (formValue.image) {
+        formData.append('thumbnail', formValue.image);
+      }
 
       const request = this.isEditMode
-        ? this.api.put<any>(`web/admin/course/${this.courseId}`, payload, headers)
-        : this.api.post<any>(`web/admin/course/create`, payload, headers);
+        ? this.api.put<any>(`web/admin/course/${this.courseId}`, formData, headers)
+        : this.api.post<any>(`web/admin/course/create`, formData, headers);
 
       request.subscribe({
         next: (res) => {
@@ -394,6 +413,7 @@ export class AdminCourseEditComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error saving course:', err);
+          this.toastService.error(err.message || 'Failed to save course. Please try again.');
         }
       });
     } else {
