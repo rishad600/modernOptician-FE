@@ -44,7 +44,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     ).subscribe({
       next: (res) => {
         if (res.success && res.data) {
-          this.plans = res.data.map((c: any) => ({
+          // Handle both legacy direct array and new paginated object structure
+          const courseData = res.data.courses || (Array.isArray(res.data) ? res.data : []);
+          
+          this.plans = courseData.map((c: any) => ({
             id: c._id,
             title: c.name,
             price: this.formatPrice(c.price, c.currency),

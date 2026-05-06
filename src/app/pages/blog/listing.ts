@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
+import { HttpParams } from '@angular/common/http';
 
 interface Blog {
   id: string;
@@ -38,12 +39,14 @@ export class BlogComponent implements OnInit {
   }
 
   fetchBlogs() {
-    this.api.get<any>('web/public/blog').subscribe({
+    let params = new HttpParams().set('search', this.searchQuery);
+
+    this.api.get<any>('web/public/blog', params).subscribe({
       next: (res) => {
         console.log('Blog API raw response:', res);
         
-        // Handle cases where res itself might be the array, or res.data is the array
-        const blogData = res.data || (Array.isArray(res) ? res : null);
+        // Handle both direct array (legacy) and paginated object (new)
+        const blogData = res.data?.blogs || (Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res : null));
         
         if (blogData && Array.isArray(blogData)) {
           this.allBlogs = blogData.map((blog: any) => ({

@@ -43,13 +43,13 @@ export class AdminCoursesComponent implements OnInit {
       })
     ).subscribe({
       next: (res) => {
-        if (res.success && res.data) {
-          this.courses = res.data.map((c: any) => ({
+        if (res.success && res.data && res.data.courses) {
+          this.courses = res.data.courses.map((c: any) => ({
             id: c._id,
             title: c.name,
             instructor: c.instructorName || 'Dr. Sarah Wilson',
             price: `${c.currency || 'USD'} ${c.price}`,
-            duration: this.formatDuration(c.totalDuration),
+            duration: this.formatDuration(c.totalDuration || 0),
             lessons: c.lessons || 0,
             students: 0, // Not in API currently
             rating: parseFloat(c.rating || '0'),

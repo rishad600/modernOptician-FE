@@ -44,8 +44,11 @@ export class MyCoursesComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         this.isLoading = false;
-        if (res.success && Array.isArray(res.data)) {
-          this.courses = res.data.map((c: any) => ({
+        // Handle both direct array and paginated object
+        const enrolledData = res.data?.courses || (Array.isArray(res.data) ? res.data : []);
+        
+        if (res.success && Array.isArray(enrolledData)) {
+          this.courses = enrolledData.map((c: any) => ({
             id: c._id,
             title: c.name,
             instructor: c.instructorName || 'Dr. Sarah Mitchell',
@@ -73,9 +76,12 @@ export class MyCoursesComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         this.isLoadingAvailable = false;
-        if (res.success && Array.isArray(res.data)) {
+        // Handle both direct array and paginated object
+        const availableData = res.data?.courses || (Array.isArray(res.data) ? res.data : []);
+
+        if (res.success && Array.isArray(availableData)) {
           // Filter out already enrolled courses (show only not enrolled)
-          this.availableCourses = res.data
+          this.availableCourses = availableData
             .filter((c: any) => !c.isEnrolled)
             .map((c: any) => ({
               id: c._id,

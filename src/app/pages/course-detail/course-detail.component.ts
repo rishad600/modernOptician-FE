@@ -284,7 +284,12 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.isFetchingVideo = false;
-        this.videoError = err?.message || 'Error occurred while fetching video.';
+        if (err.status === 403) {
+          this.videoError = 'Purchase Required: This lesson is not available for free preview.';
+          this.toast.info('Please purchase the course to access this lesson.');
+        } else {
+          this.videoError = err?.message || 'Error occurred while fetching video.';
+        }
         this.cdr.detectChanges();
       }
     });

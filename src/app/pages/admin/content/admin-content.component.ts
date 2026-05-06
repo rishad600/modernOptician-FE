@@ -45,8 +45,8 @@ export class AdminContentComponent implements OnInit {
       })
     ).subscribe({
       next: (res) => {
-        if (res.success && res.data) {
-          this.articles = res.data.map((art: any) => ({
+        if (res.success && res.data && res.data.blogs) {
+          this.articles = res.data.blogs.map((art: any) => ({
             id: art._id,
             title: art.title,
             author: art.author || 'Anonymous',

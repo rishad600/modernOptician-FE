@@ -74,7 +74,9 @@
           <div class="stat-card skeleton" *ngFor="let i of [1,2,3,4]"></div>
         </div>
         <div *ngFor="let stat of stats" class="stat-card">
-          <div class="stat-card__icon" [ngClass]="stat.icon"></div>
+          <div class="stat-card__icon" [ngClass]="stat.icon">
+            <i [class]="'icon-' + stat.icon"></i>
+          </div>
           <div class="stat-card__info">
             <span class="stat-card__label">{{ stat.label }}</span>
             <div class="stat-card__footer">
@@ -141,25 +143,33 @@
       <div class="features-grid">
         <a routerLink="/admin/courses" class="feature-item">
           <div class="feature-item__main">
-            <div class="feature-item__icon courses"></div>
+            <div class="feature-item__icon courses">
+              <i class="icon-courses"></i>
+            </div>
             <span class="feature-item__label">Manage Courses</span>
           </div>
         </a>
         <a routerLink="/admin/students" class="feature-item">
           <div class="feature-item__main">
-            <div class="feature-item__icon students"></div>
+            <div class="feature-item__icon students">
+              <i class="icon-students"></i>
+            </div>
             <span class="feature-item__label">Manage Students</span>
           </div>
         </a>
         <a routerLink="/admin/payments" class="feature-item">
           <div class="feature-item__main">
-            <div class="feature-item__icon payments"></div>
+            <div class="feature-item__icon payments">
+              <i class="icon-payments"></i>
+            </div>
             <span class="feature-item__label">View Payments</span>
           </div>
         </a>
         <a routerLink="/admin/content" class="feature-item">
           <div class="feature-item__main">
-            <div class="feature-item__icon content"></div>
+            <div class="feature-item__icon content">
+              <i class="icon-content"></i>
+            </div>
             <span class="feature-item__label">Blog/Content Mgmt</span>
           </div>
         </a>

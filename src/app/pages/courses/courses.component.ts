@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CourseCardComponent } from '../../shared/components/course-card/course-card.component';
 import { ApiService } from '../../core/services/api.service';
 import { catchError, throwError } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-courses',
@@ -39,7 +40,11 @@ export class CoursesComponent implements OnInit {
     const token = localStorage.getItem('token');
     const endpoint = token ? 'web/user/course' : 'web/public/course';
 
-    this.api.get<any>(endpoint).pipe(
+    let params = new HttpParams()
+      .set('search', this.searchQuery)
+      .set('category', this.selectedCategory === 'all' ? '' : this.selectedCategory);
+
+    this.api.get<any>(endpoint, params).pipe(
       catchError(err => {
         this.isLoading = false;
         this.error = 'Failed to load courses. Please try again later.';
@@ -49,8 +54,11 @@ export class CoursesComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         this.isLoading = false;
-        if (res.success && Array.isArray(res.data)) {
-          this.allCourses = res.data.map((c: any) => ({
+        // Handle both direct array (legacy) and paginated object (new)
+        const courseData = res.data?.courses || (Array.isArray(res.data) ? res.data : []);
+        
+        if (res.success && Array.isArray(courseData)) {
+          this.allCourses = courseData.map((c: any) => ({
             id: c._id,
             title: c.name,
             price: this.formatPrice(c.price, c.currency),

@@ -1,8 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
+import { ApiService } from '../../../core/services/api.service';
 
 @Component({
   selector: 'app-profile',
@@ -13,11 +12,11 @@ import { environment } from '../../../../environments/environment';
 })
 export class ProfileComponent implements OnInit {
   user = {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 000-0000',
-    bio: 'Optometry student passionate about eye care and modern lens technology.',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    bio: '',
     avatar: '',
     languagePreference: 'en',
     oldPassword: '',
@@ -32,10 +31,8 @@ export class ProfileComponent implements OnInit {
   selectedAvatarFile: File | null = null;
   avatarPreview: string | null = null;
 
-  private apiUrl = environment.apiUrl;
-
   constructor(
-    private http: HttpClient,
+    private api: ApiService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -44,16 +41,8 @@ export class ProfileComponent implements OnInit {
   }
 
   loadProfile() {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-
-    this.http.get(`${this.apiUrl}/web/user/profile`, { headers }).subscribe({
+    this.api.get<any>('web/user/profile').subscribe({
       next: (response: any) => {
-        // Assume response structure maps 'name' to 'firstName'
         const profile = response.data || response;
         if (profile) {
           this.user.firstName = profile.name || profile.firstName || '';
@@ -65,7 +54,7 @@ export class ProfileComponent implements OnInit {
         }
         this.cdr.detectChanges();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Failed to load profile:', error);
       }
     });
@@ -122,21 +111,26 @@ export class ProfileComponent implements OnInit {
     this.profileError = null;
     this.profileSuccess = null;
 
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const payload: any = {
+      name: this.user.firstName,
+      lastName: this.user.lastName,
+      phone: this.user.phone
+    };
 
-    const formData = new FormData();
-    formData.append('name', this.user.firstName);
-    formData.append('lastName', this.user.lastName);
-    formData.append('phone', this.user.phone);
+    let finalBody: any;
 
     if (this.selectedAvatarFile) {
+      // Use FormData if there's a file to upload
+      const formData = new FormData();
+      Object.keys(payload).forEach(key => formData.append(key, payload[key]));
       formData.append('avatar', this.selectedAvatarFile);
+      finalBody = formData;
+    } else {
+      // Use JSON if no file is present
+      finalBody = payload;
     }
 
-    this.http.put(`${this.apiUrl}/web/user/profile`, formData, { headers }).subscribe({
+    this.api.put<any>('web/user/profile', finalBody).subscribe({
       next: (response: any) => {
         this.profileSuccess = response.message || 'Profile updated successfully!';
         if (response.data?.avatar) {
@@ -146,9 +140,9 @@ export class ProfileComponent implements OnInit {
         this.selectedAvatarFile = null;
         this.cdr.detectChanges();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Profile update error:', error);
-        this.profileError = error.error?.message || 'Failed to update profile. Please try again.';
+        this.profileError = error.error?.message || error.message || 'Failed to update profile. Please try again.';
         this.cdr.detectChanges();
       }
     });
@@ -168,18 +162,12 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-
     const body = {
       currentPassword: this.user.oldPassword,
       newPassword: this.user.newPassword
     };
 
-    this.http.put(`${this.apiUrl}/web/user/profile/change-password`, body, { headers }).subscribe({
+    this.api.put<any>('web/user/profile/change-password', body).subscribe({
       next: (response: any) => {
         this.passwordSuccess = 'Password changed successfully!';
         this.user.oldPassword = '';
@@ -187,11 +175,11 @@ export class ProfileComponent implements OnInit {
         this.user.confirmPassword = '';
         this.cdr.detectChanges();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Password change error:', error);
         
         // Extract the error message from the JSON body if it exists
-        const apiErrorMsg = error.error?.message;
+        const apiErrorMsg = error.error?.message || error.message;
         
         if (error.status === 400) {
           this.passwordError = apiErrorMsg || 'The current password you entered is incorrect. Please try again.';
