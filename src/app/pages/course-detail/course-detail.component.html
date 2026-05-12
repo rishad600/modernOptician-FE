@@ -224,4 +224,41 @@
       </div>
     </div>
   </div>
+
+  <!-- Payment Modal Overlay -->
+  <div class="payment-overlay" *ngIf="showPaymentModal" (click)="closePaymentModal()">
+    <div class="payment-modal" (click)="$event.stopPropagation()">
+      <div class="payment-modal__header">
+        <h3>Enroll in Course</h3>
+        <button class="btn-close" (click)="closePaymentModal()">×</button>
+      </div>
+      
+      <div class="payment-modal__body">
+        <div class="course-summary">
+          <div class="course-summary__image">
+            <img [src]="course.image" [alt]="course.title">
+          </div>
+          <div class="course-summary__info">
+            <h4>{{ course.title }}</h4>
+            <p class="instructor">{{ course.instructor }}</p>
+            <p class="price">{{ course.price }}</p>
+          </div>
+        </div>
+
+        <div class="payment-methods">
+          <p class="payment-methods__label">Pay with PayPal or Card</p>
+          <div id="paypal-button-container"></div>
+          
+          <div class="processing-overlay" *ngIf="isPurchasing">
+            <div class="spinner"></div>
+            <p>Processing enrollment...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="payment-modal__footer">
+        <p class="secure-text">Secure payment powered by PayPal</p>
+      </div>
+    </div>
+  </div>
 </div>

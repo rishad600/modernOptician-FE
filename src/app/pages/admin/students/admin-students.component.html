@@ -13,17 +13,17 @@
     <div class="stat-card">
       <span class="stat-card__label">Total Students</span>
       <span class="stat-card__value">{{ stats?.totalStudents | number }}</span>
-      <span class="stat-card__trend positive">+{{ stats?.totalStudentsThisWeek || 0 }} this week</span>
+      <span class="stat-card__trend positive">{{ stats?.totalStudentsThisWeek || 0 }} this week</span>
     </div>
     <div class="stat-card">
       <span class="stat-card__label">Active Now</span>
       <span class="stat-card__value">{{ stats?.activeStudents | number }}</span>
-      <span class="stat-card__trend positive">+{{ stats?.activeStudentsGrowth || 0 }}%</span>
+      <span class="stat-card__trend positive">{{ stats?.activeStudentsGrowth || 0 }}%</span>
     </div>
     <div class="stat-card">
       <span class="stat-card__label">Completions</span>
       <span class="stat-card__value">{{ stats?.completions | number }}</span>
-      <span class="stat-card__trend positive">+{{ stats?.completionsGrowth || 0 }}%</span>
+      <span class="stat-card__trend positive">{{ stats?.completionsGrowth || 0 }}%</span>
     </div>
   </div>
 

@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
+import { PaymentService } from '../../../core/services/payment.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { catchError, throwError } from 'rxjs';
+import { catchError, throwError, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-my-courses',
@@ -19,8 +20,15 @@ export class MyCoursesComponent implements OnInit {
   isLoadingAvailable = false;
   error: string | null = null;
 
+  // Payment state
+  showPaymentModal = false;
+  selectedCourse: any = null;
+  isProcessingPayment = false;
+  paypalClientId: string | null = null;
+
   constructor(
     private api: ApiService,
+    private paymentService: PaymentService,
     private cdr: ChangeDetectorRef,
     private toast: ToastService
   ) {}
@@ -44,7 +52,6 @@ export class MyCoursesComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         this.isLoading = false;
-        // Handle both direct array and paginated object
         const enrolledData = res.data?.courses || (Array.isArray(res.data) ? res.data : []);
         
         if (res.success && Array.isArray(enrolledData)) {
@@ -76,11 +83,9 @@ export class MyCoursesComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         this.isLoadingAvailable = false;
-        // Handle both direct array and paginated object
         const availableData = res.data?.courses || (Array.isArray(res.data) ? res.data : []);
 
         if (res.success && Array.isArray(availableData)) {
-          // Filter out already enrolled courses (show only not enrolled)
           this.availableCourses = availableData
             .filter((c: any) => !c.isEnrolled)
             .map((c: any) => ({
@@ -89,6 +94,7 @@ export class MyCoursesComponent implements OnInit {
               instructor: c.instructorName || 'Dr. Sarah Mitchell',
               price: this.formatPrice(c.price, c.currency),
               rawPrice: c.price,
+              currency: c.currency || 'USD',
               image: c.thumbnail || 'images/course-placeholder.jpg',
               features: c.features || []
             }));
@@ -106,5 +112,76 @@ export class MyCoursesComponent implements OnInit {
       currency: currency || 'USD',
       minimumFractionDigits: 2
     }).format(amount);
+  }
+
+  // --- Payment Logic ---
+
+  openEnrollment(course: any) {
+    this.selectedCourse = course;
+    this.showPaymentModal = true;
+    this.initPaypal();
+  }
+
+  closePaymentModal() {
+    this.showPaymentModal = false;
+    this.selectedCourse = null;
+  }
+
+  async initPaypal() {
+    if (!this.paypalClientId) {
+      try {
+        const config = await this.paymentService.getPaypalConfig().toPromise();
+        this.paypalClientId = config.clientId;
+      } catch (err) {
+        this.toast.error('Failed to load PayPal configuration');
+        return;
+      }
+    }
+
+    try {
+      await this.paymentService.loadPaypalSdk(this.paypalClientId!, this.selectedCourse.currency);
+      this.renderPaypalButtons();
+    } catch (err) {
+      this.toast.error('Failed to load PayPal SDK');
+    }
+  }
+
+  renderPaypalButtons() {
+    const container = document.getElementById('paypal-button-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+    (window as any).paypal.Buttons({
+      createOrder: () => {
+        return this.paymentService.createOrder(this.selectedCourse.id).toPromise();
+      },
+      onApprove: (data: any) => {
+        this.isProcessingPayment = true;
+        this.cdr.detectChanges();
+        
+        this.paymentService.captureOrder(data.orderID).pipe(
+          finalize(() => {
+            this.isProcessingPayment = false;
+            this.cdr.detectChanges();
+          })
+        ).subscribe({
+          next: () => {
+            this.toast.success('Successfully enrolled in ' + this.selectedCourse.title);
+            this.closePaymentModal();
+            this.fetchEnrolledCourses();
+            this.fetchAvailableCourses();
+          },
+          error: (err) => {
+            this.toast.error(err.message || 'Payment capture failed');
+          }
+        });
+      },
+      onCancel: () => {
+        this.toast.info('Payment cancelled');
+      },
+      onError: (err: any) => {
+        this.toast.error('PayPal Error: ' + (err?.message || 'Unknown error'));
+      }
+    }).render('#paypal-button-container');
   }
 }

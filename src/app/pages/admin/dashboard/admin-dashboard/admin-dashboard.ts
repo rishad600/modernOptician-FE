@@ -86,10 +86,30 @@ export class AdminDashboardComponent implements OnInit {
           const d = res.data;
           
           this.stats = [
-            { label: 'Total Students', value: (d.overview.totalStudents?.value || 0).toLocaleString(), icon: 'students', trend: `+${d.overview.totalStudents?.growth || 0}%` },
-            { label: 'Total Revenue', value: this.formatCurrency(d.overview.totalRevenue?.value || 0), icon: 'revenue', trend: `+${d.overview.totalRevenue?.growth || 0}%` },
-            { label: 'Active Courses', value: (d.overview.activeCourses?.value || 0).toString(), icon: 'courses', trend: `+${d.overview.activeCourses?.growth || 0}%` },
-            { label: 'Recent Enrollments', value: (d.overview.recentEnrollments?.value || 0).toString(), icon: 'enrollments', trend: `+${d.overview.recentEnrollments?.growth || 0}%` },
+            { 
+              label: 'Total Students', 
+              value: (d.overview.totalStudents?.value || 0).toLocaleString(), 
+              icon: 'students', 
+              trend: `${(d.overview.totalStudents?.growth || 0) >= 0 ? '+' : ''}${d.overview.totalStudents?.growth || 0}%` 
+            },
+            { 
+              label: 'Total Revenue', 
+              value: this.formatCurrency(d.overview.totalRevenue?.value || 0), 
+              icon: 'revenue', 
+              trend: `${(d.overview.totalRevenue?.growth || 0) >= 0 ? '+' : ''}${d.overview.totalRevenue?.growth || 0}%` 
+            },
+            { 
+              label: 'Active Courses', 
+              value: (d.overview.activeCourses?.value || 0).toString(), 
+              icon: 'courses', 
+              trend: `${(d.overview.activeCourses?.growth || 0) >= 0 ? '+' : ''}${d.overview.activeCourses?.growth || 0}%` 
+            },
+            { 
+              label: 'Recent Enrollments', 
+              value: (d.overview.recentEnrollments?.value || 0).toString(), 
+              icon: 'enrollments', 
+              trend: `${(d.overview.recentEnrollments?.growth || 0) >= 0 ? '+' : ''}${d.overview.recentEnrollments?.growth || 0}%` 
+            },
           ];
 
           this.revenueData = d.revenueTrend.map((item: any) => ({

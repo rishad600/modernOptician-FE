@@ -74,9 +74,49 @@
           <p class="available-course__instructor">{{ course.instructor }}</p>
           <h4 class="available-course__title">{{ course.title }}</h4>
           <p class="available-course__price">{{ course.price }}</p>
-          <button class="btn-secondary btn-sm">View Details</button>
+          <div class="available-course__actions">
+            <button class="btn-secondary btn-sm" [routerLink]="['/course', course.id]">Details</button>
+            <button class="btn-primary btn-sm" (click)="$event.stopPropagation(); openEnrollment(course)">ENROLL NOW</button>
+          </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Payment Modal Overlay -->
+  <div class="payment-overlay" *ngIf="showPaymentModal" (click)="closePaymentModal()">
+    <div class="payment-modal" (click)="$event.stopPropagation()">
+      <div class="payment-modal__header">
+        <h3>Enroll in Course</h3>
+        <button class="btn-close" (click)="closePaymentModal()">×</button>
+      </div>
+      
+      <div class="payment-modal__body">
+        <div class="course-summary" *ngIf="selectedCourse">
+          <div class="course-summary__image">
+            <img [src]="selectedCourse.image" [alt]="selectedCourse.title">
+          </div>
+          <div class="course-summary__info">
+            <h4>{{ selectedCourse.title }}</h4>
+            <p class="instructor">{{ selectedCourse.instructor }}</p>
+            <p class="price">{{ selectedCourse.price }}</p>
+          </div>
+        </div>
+
+        <div class="payment-methods">
+          <p class="payment-methods__label">Pay with PayPal or Card</p>
+          <div id="paypal-button-container"></div>
+          
+          <div class="processing-overlay" *ngIf="isProcessingPayment">
+            <div class="spinner"></div>
+            <p>Processing enrollment...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="payment-modal__footer">
+        <p class="secure-text"><i class="icon-lock"></i> Secure payment powered by PayPal</p>
+      </div>
+    </div>
+  </div>
 </div>

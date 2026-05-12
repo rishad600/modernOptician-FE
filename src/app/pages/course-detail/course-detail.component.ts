@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
+import { PaymentService } from '../../core/services/payment.service';
 import { ToastService } from '../../core/services/toast.service';
 import { HttpParams } from '@angular/common/http';
-import { catchError, throwError } from 'rxjs';
+import { catchError, throwError, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-course-detail',
@@ -26,6 +27,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
     lessons: 0,
     price: '',
     rawPrice: 0,
+    currency: 'USD',
     image: 'images/course-placeholder.jpg',
     description: '',
     features: [],
@@ -39,6 +41,8 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
 
   // Purchase State
   isPurchasing = false;
+  showPaymentModal = false;
+  paypalClientId: string | null = null;
 
   // Video Preview State
   showVideoModal = false;
@@ -56,6 +60,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private api: ApiService,
+    private paymentService: PaymentService,
     private cdr: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
     private toast: ToastService
@@ -109,6 +114,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
             lessons: data.lessonsArray?.filter((l: any) => !l.isTrashed).length ?? data.lessons ?? 0,
             price: this.formatPrice(data.price, data.currency),
             rawPrice: data.price,
+            currency: data.currency || 'USD',
             image: data.thumbnail || 'images/article-1.jpg',
             description: data.description,
             features: data.features || [],
@@ -191,32 +197,76 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isPurchasing = true;
-    this.cdr.detectChanges();
+    this.showPaymentModal = true;
+    this.initPaypal();
+  }
 
-    this.api.post<any>(`web/user/course/purchase/${this.courseId}`).subscribe({
-      next: (res) => {
-        this.isPurchasing = false;
-        if (res.success) {
-          this.toast.success('Course purchased successfully!');
-          this.course.isEnrolled = true;
-          // Unlock all lessons
-          this.curriculum = this.curriculum.map(l => ({
-            ...l,
-            isLocked: !l.isFreePreview
-          }));
-        } else {
-          this.toast.error(res.message || 'Failed to purchase course');
-        }
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        this.isPurchasing = false;
-        const message = err?.message || 'Error occurred while purchasing course.';
-        this.toast.error(message);
-        this.cdr.detectChanges();
+  closePaymentModal() {
+    this.showPaymentModal = false;
+    this.cdr.detectChanges();
+  }
+
+  async initPaypal() {
+    if (!this.paypalClientId) {
+      try {
+        const config = await this.paymentService.getPaypalConfig().toPromise();
+        this.paypalClientId = config.clientId;
+      } catch (err) {
+        this.toast.error('Failed to load PayPal configuration');
+        return;
       }
-    });
+    }
+
+    try {
+      await this.paymentService.loadPaypalSdk(this.paypalClientId!, this.course.currency);
+      this.renderPaypalButtons();
+    } catch (err) {
+      this.toast.error('Failed to load PayPal SDK');
+    }
+  }
+
+  renderPaypalButtons() {
+    const container = document.getElementById('paypal-button-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+    (window as any).paypal.Buttons({
+      createOrder: () => {
+        return this.paymentService.createOrder(this.courseId!).toPromise();
+      },
+      onApprove: (data: any) => {
+        this.isPurchasing = true;
+        this.cdr.detectChanges();
+        
+        this.paymentService.captureOrder(data.orderID).pipe(
+          finalize(() => {
+            this.isPurchasing = false;
+            this.cdr.detectChanges();
+          })
+        ).subscribe({
+          next: () => {
+            this.toast.success('Successfully enrolled in ' + this.course.title);
+            this.closePaymentModal();
+            this.course.isEnrolled = true;
+            // Unlock all lessons
+            this.curriculum = this.curriculum.map(l => ({
+              ...l,
+              isLocked: !l.isFreePreview
+            }));
+            this.cdr.detectChanges();
+          },
+          error: (err: any) => {
+            this.toast.error(err.message || 'Payment capture failed');
+          }
+        });
+      },
+      onCancel: () => {
+        this.toast.info('Payment cancelled');
+      },
+      onError: (err: any) => {
+        this.toast.error('PayPal Error: ' + (err?.message || 'Unknown error'));
+      }
+    }).render('#paypal-button-container');
   }
 
   // --- Video Preview Logic ---
