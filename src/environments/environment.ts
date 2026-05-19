@@ -1,4 +1,5 @@
 export const environment = {
     production: true,
-    apiUrl: 'http://localhost:5001'
+    apiUrl: 'https://modernoptician-production.up.railway.app'
+    // apiUrl: 'http://localhost:5001'
 };
